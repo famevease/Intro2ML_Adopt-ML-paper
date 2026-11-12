@@ -5,7 +5,7 @@
 * **Bài báo mục tiêu:** *Few-Shot Class-Incremental Learning via Training-Free Prototype Calibration* (TEEN)
 * **Hội nghị & Thời gian:** NeurIPS 2023 (Kỷ yếu xuất bản 12/2023, CORE A*)
 * **Tác giả:** Qi-Wei Wang, Da-Wei Zhou, Yi-Kai Zhang, De-Chuan Zhan, Han-Jia Ye (Đại học Nam Kinh / LAMDA)
-* **Thành viên thực hiện:**
+* **Nhóm thực hiện:** Nhóm 05 (Team 05)
   * **Nguyễn Hoàng Long (Long):** Kỹ thuật trưởng (Lead Code, Pipeline Tái lập & Thực nghiệm Lab 1)
   * **Trần Gia Hiên (Hiên):** Trưởng nhóm Nội dung (Lead Slide Deck, Lý thuyết M2, Quản trị Repo & Phân tích)
 * **Hạn nộp Gói 1 (Slide Deck + Lab 1):** 21/11 *(Mục tiêu đóng gói hoàn chỉnh: 20/11)*
