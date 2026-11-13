@@ -104,23 +104,25 @@
   * **Visual Metaphors:**
     * Branch A (Red): `⚡ Gradient Descent` $\to$ `💥 Severe Overfitting & Forgetting`
     * Branch B (Amber): `❄️ Frozen Weights` $\to$ `🔒 Rigid & Inflexible Head`
-  * **Bottom Banner:** Badges linking to **Lecture 8** and **Lecture 11**.
+  * **Bottom Banner:** Badges linking to **[Lecture 8](https://work.caltech.edu/slides/slides08.pdf)** `[7]` and **[Lecture 11](https://work.caltech.edu/slides/slides11.pdf)** `[8]`.
 * **On-Slide Content:**
   * **The Optimization Fork ($K=5$ vs. $|\boldsymbol{\theta}| > 11\text{M}$):**
     * **Branch A: Fine-tune Backbone ($\nabla_{\boldsymbol{\theta}} \mathcal{L} \neq \mathbf{0}$):**
-      * Millions of weights overfit 5 samples $\to$ base manifold destroyed
+      * Millions of weights overfit scarce novel samples $\to$ base manifold destroyed
     * **Branch B: Freeze Backbone ($\nabla_{\boldsymbol{\theta}} \mathcal{L} = \mathbf{0}$):**
       * Preserves stability, but naive heads fail on novel semantic manifolds
   * **Direct Lecture Principles:**
-    * **Lecture 11 (Overfitting):** Generalization bound $\mathcal{O}(1/\sqrt{N})$ collapses when $N=5$
-    * **Lecture 8 (Bias-Variance):** High hypothesis capacity + microscopic sample size $\to$ estimation variance explodes
+    * **[Lecture 11 (Overfitting)](https://work.caltech.edu/slides/slides11.pdf) `[8]`:** Generalization bound $\mathcal{O}(1/\sqrt{N})$ collapses when $N=5$
+    * **[Lecture 8 (Bias-Variance)](https://work.caltech.edu/slides/slides08.pdf) `[7]`:** High hypothesis capacity + microscopic sample size $\to$ estimation variance explodes
 * **Speaker Notes:**
   Why can we not simply apply standard deep learning techniques to FSCIL? This slide formalizes the Optimization Dilemma, establishing a direct link to fundamental machine learning principles from our lectures.
-  If we choose Branch A and compute gradient descent over the novel 5 samples, we optimize over 11 million weights in a standard ResNet. As established in Lecture 11 on Overfitting and Statistical Learning Theory, generalization bounds depend directly on sample size. When $N$ is merely 5, Empirical Risk Minimization collapses: the model overfits the training samples perfectly while destroying historical features.
+  If we choose Branch A and compute gradient descent over the novel 5 samples, we optimize over 11 million weights in a standard ResNet. As established in [Lecture 11 on Overfitting](https://work.caltech.edu/slides/slides11.pdf) and Statistical Learning Theory `[8]`, generalization bounds depend directly on sample size. When $N$ is merely 5, Empirical Risk Minimization collapses: the model overfits the training samples perfectly while destroying historical features.
   Conversely, if we choose Branch B and freeze the backbone to ensure stability, naive linear heads cannot generalize.
-  Referring to Lecture 8 on the Bias-Variance Tradeoff: with $N=5$, the variance of any parameter estimator explodes. The empirical mean of 5 images suffers from severe sampling noise, deviating unpredictably from the true population distribution centroid. This mathematical reality renders conventional optimization unsuitable.
+  Referring to [Lecture 8 on the Bias-Variance Tradeoff](https://work.caltech.edu/slides/slides08.pdf) `[7]`: with $N=5$, the variance of any parameter estimator explodes. The empirical mean of 5 images suffers from severe sampling noise, deviating unpredictably from the true population distribution centroid. This mathematical reality renders conventional optimization unsuitable.
 * **Footnote / Citation:**
   `[6]` A. F. Akyürek, E. Akyürek, D. Wijaya, and J. Andreas, "Subspace regularizers for few-shot class incremental learning," in ICLR, 2022.
+  `[7]` Y. S. Abu-Mostafa, "Lecture 08 – The Bias-Variance Tradeoff," *CS 156: Learning From Data*, California Institute of Technology, 2012. [Online]. Available: https://work.caltech.edu/slides/slides08.pdf
+  `[8]` Y. S. Abu-Mostafa, "Lecture 11 – Overfitting," *CS 156: Learning From Data*, California Institute of Technology, 2012. [Online]. Available: https://work.caltech.edu/slides/slides11.pdf
 
 ---
 
@@ -146,7 +148,7 @@
   While this approach achieved reasonable success in standard incremental learning, it suffers from two fatal limitations in FSCIL. First, the assumption of an exemplar buffer violates strict privacy regulations such as GDPR. In commercial biometric or healthcare systems, retaining historical user data is legally forbidden.
   Second, under the extreme asymmetry of FSCIL—where novel classes possess only 5 samples while the replay buffer retains dozens of base exemplars—the distillation loss produces noisy, distorted gradients. Knowledge distillation cannot compensate for extreme few-shot scarcity, leading to severe representation drift.
 * **Footnote / Citation:**
-  `[7]` S.-A. Rebuffi et al., "iCaRL: Incremental classifier and representation learning," in CVPR, 2017.
+  `[9]` S.-A. Rebuffi et al., "iCaRL: Incremental classifier and representation learning," in CVPR, 2017.
 
 ---
 
@@ -170,7 +172,7 @@
   However, this architectural sophistication comes at a steep price. First, bi-level meta-optimization requires second-order gradient evaluations, rendering training extraordinarily compute-intensive and prone to optimization collapse.
   Second, and more fundamentally: the relational topological patterns learned by the GNN are inherently conditioned on the semantic manifold of the base dataset. When incremental classes from unfamiliar visual domains arrive, the graph propagation mechanism propagates misleading structural context, destabilizing the classifier. This highlights the need for a simpler, more robust inductive bias.
 * **Footnote / Citation:**
-  `[8]` C. Zhang et al., "Few-shot incremental learning with continually evolved classifiers," in CVPR, 2021.
+  `[10]` C. Zhang et al., "Few-shot incremental learning with continually evolved classifiers," in CVPR, 2021.
 
 ---
 
@@ -194,8 +196,8 @@
   While computationally appealing, naive NCM fails catastrophically due to high estimation variance. From elementary statistics, the variance of an empirical sample mean scales as Sigma over $K$. When $K=5$, the sample centroid is severely perturbed by arbitrary factors such as lighting, camera angle, or background clutter.
   As illustrated on the slide, the noisy prototype $\mathbf{c}_k$ drifts away from the true population mean $\boldsymbol{\mu}^*_k$. Because base classes are densely packed in the representation space, this drift causes novel class prototypes to wander into the decision regions of neighboring base classes. Consequently, during inference, the model exhibits a severe false-positive bias, misclassifying novel test instances as base classes.
 * **Footnote / Citation:**
-  `[9]` J. Snell, K. Swersky, and R. Zemel, "Prototypical networks for few-shot learning," in NIPS, 2017.
-  `[10]` J. Liu et al., "Prototype rectification for few-shot learning," in ECCV, 2020.
+  `[11]` J. Snell, K. Swersky, and R. Zemel, "Prototypical networks for few-shot learning," in NIPS, 2017.
+  `[12]` J. Liu et al., "Prototype rectification for few-shot learning," in ECCV, 2020.
 
 ---
 
@@ -241,7 +243,7 @@
   * **Paradigm Shift:**
     * **Traditional View:** Continual learning requires weight adaptation ($\boldsymbol{\theta}_t \leftarrow \boldsymbol{\theta}_{t-1} - \eta \nabla \mathcal{L}$)
     * **TEEN View:** Weight updates under $K=5$ are ill-posed $\to$ **Lock $\boldsymbol{\theta}_t \equiv \boldsymbol{\theta}_0$** and solve continual learning via **deterministic vector geometry calibration**
-  * **Theoretical Pillar – Occam's Razor (Lecture 17):**
+  * **Theoretical Pillar – [Occam's Razor (Lecture 17)](https://work.caltech.edu/slides/slides17.pdf) `[13]`:**
     * Zero parameter degrees of freedom during incremental tasks $\to$ completely eliminates catastrophic forgetting by design
   * **Operational Advantages:**
     * 🔒 **Zero Forgetting:** Base class representations remain mathematically invariant
@@ -251,9 +253,10 @@
   Slide 9 presents the core philosophy of TEEN, representing a bold paradigm shift in continual learning methodology.
   For years, the continual learning community operated under the premise that novel knowledge requires parameter adaptation. TEEN challenges this assumption: under few-shot conditions, modifying millions of neural network weights from 5 samples is fundamentally ill-posed and mathematically hazardous.
   Instead, TEEN proposes the Training-Free Paradigm. The deep backbone network is fully trained once on the diverse base classes and then permanently frozen. Across all subsequent incremental sessions, not a single gradient is computed. There is zero backpropagation, zero weight decay, and zero optimizer state tracking.
-  Connecting directly to Lecture 17 on Occam's Razor: the simplest model that explains the observations is often the most robust. By freezing network weights, the hypothesis space during incremental sessions is strictly constrained, completely eliminating catastrophic forgetting by design. The entire problem of continual learning is converted from parameter optimization into geometric post-processing in vector space.
+  Connecting directly to [Lecture 17 on Occam's Razor](https://work.caltech.edu/slides/slides17.pdf) `[13]`: the simplest model that explains the observations is often the most robust. By freezing network weights, the hypothesis space during incremental sessions is strictly constrained, completely eliminating catastrophic forgetting by design. The entire problem of continual learning is converted from parameter optimization into geometric post-processing in vector space.
 * **Footnote / Citation:**
   `[1]` Q.-W. Wang et al., "Few-Shot Class-Incremental Learning via Training-Free Prototype Calibration," in NeurIPS, 2023.
+  `[13]` Y. S. Abu-Mostafa, "Lecture 17 – Three Learning Principles," *CS 156: Learning From Data*, California Institute of Technology, 2012. [Online]. Available: https://work.caltech.edu/slides/slides17.pdf
 
 ---
 
@@ -361,7 +364,7 @@
   Furthermore, consider the geometry of high-dimensional spaces: our feature extractor outputs a 512-dimensional embedding vector. Five sample points can span at most a 4-dimensional affine hyperplane within this 512-dimensional manifold. Consequently, 508 orthogonal dimensions remain completely unconstrained by the support data.
   The empirical mean is inevitably dragged toward arbitrary idiosyncratic traits present in those specific 5 images—such as unique background textures, lighting angles, or peripheral objects. This vector displacement is what we define as the Sampling Error Vector $\boldsymbol{\epsilon}_k$.
 * **Footnote / Citation:**
-  `[9]` J. Snell, K. Swersky, and R. Zemel, "Prototypical networks for few-shot learning," in NIPS, 2017.
+  `[11]` J. Snell, K. Swersky, and R. Zemel, "Prototypical networks for few-shot learning," in NIPS, 2017.
 
 ---
 
@@ -397,7 +400,7 @@
 * **Visual Elements:**
   * **Layout:** Left Column (Convex Vector Pulling Diagram `slides/assets/convex_calibration.png`) + Right Column (Formula & Shrinkage Theory Card).
   * **Diagram Details:** Raw prototype $\mathbf{c}_k$ pulled along line segment toward base context $\tilde{\mathbf{c}}_k = \sum w_b \mathbf{c}_b$ to produce calibrated prototype $\bar{\mathbf{c}}_k$.
-  * **Callout Badge:** `Lecture 12: Regularization & Shrinkage`.
+  * **Callout Badge:** **[Lecture 12: Regularization & Shrinkage](https://work.caltech.edu/slides/slides12.pdf)** `[14]`.
 * **On-Slide Content:**
   * **Convex Combination Calibration Formula:**
     $$\bar{\mathbf{c}}_k = (1 - \alpha)\mathbf{c}_k + \alpha \sum_{b \in \mathcal{C}_{base}} w_b^{(k)} \mathbf{c}_b, \quad \alpha \in [0, 1]$$
@@ -409,11 +412,12 @@
 * **Speaker Notes:**
   We now arrive at the core mathematical innovation of TEEN: prototype calibration via convex combination.
   The calibrated prototype $\bar{\mathbf{c}}_k$ is formed as a convex sum of two vectors: the noisy empirical novel prototype $\mathbf{c}_k$, weighted by $(1 - \alpha)$, and the semantic base context vector, weighted by $\alpha$.
-  Why does this simple linear interpolation work so effectively? The answer lies in deep statistical theory, directly connected to Lecture 12 on Regularization and the classical James-Stein Shrinkage Phenomenon.
+  Why does this simple linear interpolation work so effectively? The answer lies in deep statistical theory, directly connected to [Lecture 12 on Regularization](https://work.caltech.edu/slides/slides12.pdf) `[14]` and the classical James-Stein Shrinkage Phenomenon.
   In high-dimensional estimation where $d$ exceeds 3, shrinking an empirical sample mean toward a central prior is proven to achieve lower expected quadratic loss than using the empirical mean alone.
   Here, the base context vector serves as an informative, data-driven prior. By choosing an optimal interpolation parameter alpha (such as 0.6), we intentionally inject a slight bias toward related base categories. In exchange, we drastically reduce the sampling variance that previously plagued the 5-shot estimate. The net Mean Squared Error between our calibrated prototype and the true population centroid is substantially decreased, stabilizing the decision boundaries.
 * **Footnote / Citation:**
   `[1]` Q.-W. Wang et al., "Few-Shot Class-Incremental Learning via Training-Free Prototype Calibration," in NeurIPS, 2023.
+  `[14]` Y. S. Abu-Mostafa, "Lecture 12 – Regularization," *CS 156: Learning From Data*, California Institute of Technology, 2012. [Online]. Available: https://work.caltech.edu/slides/slides12.pdf
 
 ---
 
@@ -523,8 +527,8 @@
   Crucially, every single experiment was instrumented with the Weights & Biases API. During execution on our NVIDIA GPU instances, our scripts continuously streamed loss values, top-1 test accuracies, learning rate dynamics, and system hardware metrics to our public W&B workspace.
   The QR code and URL on this slide allow the evaluation committee to inspect our live dashboards, verify our commit history, and examine the exact execution logs behind every reported data point.
 * **Footnote / Citation:**
-  `[11]` A. Paszke et al., "PyTorch: An imperative style, high-performance deep learning library," in NeurIPS, 2019.
-  `[12]` L. Biewald, "Experiment Tracking with Weights and Biases," 2020.
+  `[15]` A. Paszke et al., "PyTorch: An imperative style, high-performance deep learning library," in NeurIPS, 2019.
+  `[16]` L. Biewald, "Experiment Tracking with Weights and Biases," 2020.
 
 ---
 
@@ -728,8 +732,8 @@
   Furthermore, in `notebooks/reproduction_demo.ipynb`, we have packaged an end-to-end, self-contained Google Colab demonstration. An evaluator can open this notebook, execute the cells sequentially, and observe data downloading, base model loading, closed-form prototype calibration, and accuracy calculation in real time.
   We offer a complete guarantee: zero data fabrication, zero selective reporting, and total empirical transparency.
 * **Footnote / Citation:**
-  `[11]` A. Paszke et al., "PyTorch: An imperative style, high-performance deep learning library," in NeurIPS, 2019.
-  `[12]` L. Biewald, "Experiment Tracking with Weights and Biases," 2020.
+  `[15]` A. Paszke et al., "PyTorch: An imperative style, high-performance deep learning library," in NeurIPS, 2019.
+  `[16]` L. Biewald, "Experiment Tracking with Weights and Biases," 2020.
 
 ---
 
