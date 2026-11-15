@@ -217,80 +217,80 @@ Lộ trình 21 ngày được chia thành 3 giai đoạn nhịp nhàng, tối ư
 
 ### Giai đoạn 1: Đồng bộ hóa & Khởi tạo Khung sườn (31/10 – 06/11)
 * **Ngày 31/10 (Thứ 7): Họp khởi động & Thiết lập công cụ**
-  * *Chung:* Họp 1 giờ qua Google Meet, thống nhất bài báo TEEN và tuyên bố Core Scope trên CIFAR-100.
-  * *Hiên:* Tạo GitHub repo công khai. Tạo project chung trên Weights & Biases (W&B), gửi invite cho Long.
-  * *Long:* Thiết lập môi trường ảo Python 3.9+, cài đặt PyTorch và kiểm tra GPU trên Google Colab.
+  - [x] *Chung:* Họp 1 giờ qua Google Meet, thống nhất bài báo TEEN và tuyên bố Core Scope trên CIFAR-100.
+  - [x] *Hiên:* Tạo GitHub repo công khai. Tạo project chung trên Weights & Biases (W&B), gửi invite cho Long.
+  - [ ] *Long:* Thiết lập môi trường ảo Python 3.9+, cài đặt PyTorch và kiểm tra GPU trên Google Colab.
 * **Ngày 01/11 (Chủ nhật): Cấu trúc Repo & Template PowerPoint**
-  * *Hiên:* Commit cấu trúc thư mục ban đầu (`src/`, `slides/`, `slides/assets/`, `notebooks/`). Dựng template PowerPoint chuẩn 16:9, chèn sẵn ô Speaker Notes và vị trí footnote IEEE.
-  * *Long:* Tải mã nguồn gốc của tác giả TEEN về máy, đọc script huấn luyện để ghi nhận các siêu tham số mặc định.
+  - [x] *Hiên:* Commit cấu trúc thư mục ban đầu (`src/`, `slides/`, `slides/assets/`, `notebooks/`). Dựng template PowerPoint chuẩn 16:9, chèn sẵn ô Speaker Notes và vị trí footnote IEEE.
+  - [ ] *Long:* Tải mã nguồn gốc của tác giả TEEN về máy, đọc script huấn luyện để ghi nhận các siêu tham số mặc định.
 * **Ngày 02/11 (Thứ 2): Dàn ý chi tiết & Bóc tách mã giả**
-  * *Hiên:* Soạn dàn ý chi tiết 28 slide vào file `slides/notes.md`.
-  * *Long:* Bóc tách công thức Section 3 ra mã giả (pseudocode), xác định danh sách các hàm cần tự viết trong `src/calibration.py`.
+  - [x] *Hiên:* Soạn dàn ý chi tiết 28 slide vào file `slides/notes.md`.
+  - [ ] *Long:* Bóc tách công thức Section 3 ra mã giả (pseudocode), xác định danh sách các hàm cần tự viết trong `src/calibration.py`.
 * **Ngày 03/11 (Thứ 3): Xử lý Dữ liệu CIFAR-100**
-  * *Hiên:* Soạn nội dung và Speaker Notes cho Slide 1 – 4 (Bối cảnh FSCIL, ví dụ thực tế).
-  * *Long:* Viết file `src/dataset.py` để tự động tải và chia CIFAR-100 thành 60 lớp base và 8 incremental tasks (5-way 5-shot). Chạy thử repo tác giả để lấy số liệu đối chiếu ban đầu.
+  - [x] *Hiên:* Soạn nội dung và Speaker Notes cho Slide 1 – 4 (Bối cảnh FSCIL, ví dụ thực tế).
+  - [ ] *Long:* Viết file `src/dataset.py` để tự động tải và chia CIFAR-100 thành 60 lớp base và 8 incremental tasks (5-way 5-shot). Chạy thử repo tác giả để lấy số liệu đối chiếu ban đầu.
 * **Ngày 04/11 (Thứ 4): Sơ đồ đầu tiên & Backbone Model**
-  * *Hiên:* Tự vẽ sơ đồ 1: Bài toán FSCIL & Hiện tượng Catastrophic Forgetting (lưu file vector vào `slides/assets/fscil_problem.png`).
-  * *Long:* Viết `src/models.py` dựng mạng ResNet-18/20 chuẩn cho CIFAR-100.
+  - [x] *Hiên:* Tự vẽ sơ đồ 1: Bài toán FSCIL & Hiện tượng Catastrophic Forgetting (vẽ trực tiếp trong slide PowerPoint).
+  - [ ] *Long:* Viết `src/models.py` dựng mạng ResNet-18/20 chuẩn cho CIFAR-100.
 * **Ngày 05/11 (Thứ 5): Soạn Tiền nhiệm & Script Train Base**
-  * *Hiên:* Soạn Slide 5 – 8 (Phân tích hạn chế của tiền nhiệm) kèm Speaker Notes chi tiết.
-  * *Long:* Viết script huấn luyện Base session `src/train_base.py`, tích hợp ghi log loss và accuracy thời gian thực lên W&B.
+  - [ ] *Hiên:* Soạn Slide 5 – 8 (Phân tích hạn chế của tiền nhiệm) kèm Speaker Notes chi tiết.
+  - [ ] *Long:* Viết script huấn luyện Base session `src/train_base.py`, tích hợp ghi log loss và accuracy thời gian thực lên W&B.
 * **Ngày 06/11 (Thứ 6): Họp Checkpoint Tuần 1**
-  * *Chung:* Rà soát chéo: Repo đã có code tải data sạch; Slide deck đã lên khung xong 8 slide đầu.
+  - [ ] *Chung:* Rà soát chéo: Repo đã có code tải data sạch; Slide deck đã lên khung xong 8 slide đầu.
 
 ### Giai đoạn 2: Hiện thực hóa Thuật toán & Soạn thảo Trọng tâm (07/11 – 14/11)
 * **Ngày 07/11 (Thứ 7): Huấn luyện Base Session & Vẽ Sơ đồ TEEN**
-  * *Long:* Chạy huấn luyện Base session trên 60 lớp CIFAR-100 (100 epochs, mất ~20 phút trên Colab GPU). Lưu checkpoint weights vào `checkpoints/base_model.pth`. Log W&B đầy đủ.
-  * *Hiên:* Dùng Figma/Draw.io vẽ sơ đồ kiến trúc tổng thể TEEN (`slides/assets/teen_pipeline.png`) và sơ đồ kéo vector bằng tổ hợp lồi (`slides/assets/convex_calibration.png`).
+  - [ ] *Long:* Chạy huấn luyện Base session trên 60 lớp CIFAR-100 (100 epochs, mất ~20 phút trên Colab GPU). Lưu checkpoint weights vào `checkpoints/base_model.pth`. Log W&B đầy đủ.
+  - [ ] *Hiên:* Dùng Figma/Draw.io vẽ sơ đồ kiến trúc tổng thể TEEN (`slides/assets/teen_pipeline.png`) và sơ đồ kéo vector bằng tổ hợp lồi (`slides/assets/convex_calibration.png`).
 * **Ngày 08/11 (Chủ nhật): Tự viết Module Hiệu chuẩn Prototype**
-  * *Long:* Tự viết file `src/calibration.py` hoàn chỉnh từ công thức toán học (hàm tính raw prototype, cosine similarity, softmax weights, convex update). Viết docstrings đầy đủ.
-  * *Hiên:* Soạn Slide 9 – 12 (Tính mới của TEEN, Overall pipeline, ký hiệu toán học).
+  - [ ] *Long:* Tự viết file `src/calibration.py` hoàn chỉnh từ công thức toán học (hàm tính raw prototype, cosine similarity, softmax weights, convex update). Viết docstrings đầy đủ.
+  - [ ] *Hiên:* Soạn Slide 9 – 12 (Tính mới của TEEN, Overall pipeline, ký hiệu toán học).
 * **Ngày 09/11 (Thứ 2): Chạy Incremental Sessions 1 đến 8**
-  * *Long:* Viết `src/eval_incremental.py`: Đóng băng backbone, forward 5 ảnh/lớp, gọi hàm hiệu chuẩn từ `calibration.py`, đo Top-1 Accuracy trên toàn bộ các lớp đã học. Chạy xong 8 sessions, log W&B.
-  * *Hiên:* Soạn Slide 13 – 16 (Cơ chế toán học, công thức hiệu chuẩn, độ phức tạp $O(1)$) kèm Speaker Notes phân tích cặn kẽ.
+  - [ ] *Long:* Viết `src/eval_incremental.py`: Đóng băng backbone, forward 5 ảnh/lớp, gọi hàm hiệu chuẩn từ `calibration.py`, đo Top-1 Accuracy trên toàn bộ các lớp đã học. Chạy xong 8 sessions, log W&B.
+  - [ ] *Hiên:* Soạn Slide 13 – 16 (Cơ chế toán học, công thức hiệu chuẩn, độ phức tạp $O(1)$) kèm Speaker Notes phân tích cặn kẽ.
 * **Ngày 10/11 (Thứ 3): Bàn giao Code & Chuẩn bị Sweep**
-  * *Long:* Kiểm tra lại code, đẩy lên nhánh `main`, bàn giao script cho Hiên chạy sweep.
-  * *Hiên:* Soạn Slide 17 – 19 (Benchmark CIFAR-100, tuyên bố Core Scope, tích hợp W&B).
+  - [ ] *Long:* Kiểm tra lại code, đẩy lên nhánh `main`, bàn giao script cho Hiên chạy sweep.
+  - [ ] *Hiên:* Soạn Slide 17 – 19 (Benchmark CIFAR-100, tuyên bố Core Scope, tích hợp W&B).
 * **Ngày 11/11 (Thứ 4): Thực thi Sensitivity Sweep**
-  * *Hiên:* Chạy script quét độ nhạy `src/sweep_alpha.py` với $\alpha \in \{0.0, 0.2, 0.4, 0.6, 0.8, 1.0\}$, ghi nhận toàn bộ run vào project W&B chung. Xuất biểu đồ kết quả.
-  * *Long:* Lập bảng đối chiếu (Comparison Table) giữa số liệu nhóm đo được và số liệu Table 1 trong bài báo gốc.
+  - [ ] *Hiên:* Chạy script quét độ nhạy `src/sweep_alpha.py` với $\alpha \in \{0.0, 0.2, 0.4, 0.6, 0.8, 1.0\}$, ghi nhận toàn bộ run vào project W&B chung. Xuất biểu đồ kết quả.
+  - [ ] *Long:* Lập bảng đối chiếu (Comparison Table) giữa số liệu nhóm đo được và số liệu Table 1 trong bài báo gốc.
 * **Ngày 12/11 (Thứ 5): Phân tích Sai lệch (Deviation Analysis)**
-  * *Long:* So sánh output của code tự viết với output khi chạy code tác giả. Xác định rõ nguyên nhân gây sai lệch.
-  * *Hiên:* Đưa biểu đồ Base session và Incremental sessions từ W&B vào Slide 20 – 22.
+  - [ ] *Long:* So sánh output của code tự viết với output khi chạy code tác giả. Xác định rõ nguyên nhân gây sai lệch.
+  - [ ] *Hiên:* Đưa biểu đồ Base session và Incremental sessions từ W&B vào Slide 20 – 22.
 * **Ngày 13/11 (Thứ 6): Lắp ráp Số liệu & Phân tích vào Slide**
-  * *Hiên:* Đưa biểu đồ Sensitivity Sweep vào Slide 23. Soạn khung Slide 24 – 26 (Phân tích sai lệch, đối chiếu code tác giả).
-  * *Long:* Viết bản nháp Speaker Notes cho phần Thực nghiệm và Sai lệch kỹ thuật để Hiên đưa vào slide.
+  - [ ] *Hiên:* Đưa biểu đồ Sensitivity Sweep vào Slide 23. Soạn khung Slide 24 – 26 (Phân tích sai lệch, đối chiếu code tác giả).
+  - [ ] *Long:* Viết bản nháp Speaker Notes cho phần Thực nghiệm và Sai lệch kỹ thuật để Hiên đưa vào slide.
 * **Ngày 14/11 (Thứ 7): Họp Checkpoint Tuần 2**
-  * *Chung:* Kiểm tra tiến độ: Toàn bộ thực nghiệm Lab 1 đã hoàn thành; slide deck đã có 26 slide hoàn chỉnh; các run W&B hiển thị công khai.
+  - [ ] *Chung:* Kiểm tra tiến độ: Toàn bộ thực nghiệm Lab 1 đã hoàn thành; slide deck đã có 26 slide hoàn chỉnh; các run W&B hiển thị công khai.
 
 ### Giai đoạn 3: Ghép nối, Hoàn thiện Speaker Notes & Đóng gói (15/11 – 20/11)
 * **Ngày 15/11 (Chủ nhật): Hoàn thiện Slide 27 - 28 & Cầu nối Lab 2**
-  * *Hiên:* Soạn Slide 27 (Tổng kết) và Slide 28 (Giới thiệu giả định Semantic Overlap để làm bàn đạp cho Milestone 3 & Lab 2 cuối kỳ).
-  * *Long:* Rà soát lại toàn bộ code trong repo, đảm bảo mọi hàm đều có docstrings chuẩn và file `requirements.txt` sạch sẽ.
+  - [ ] *Hiên:* Soạn Slide 27 (Tổng kết) và Slide 28 (Giới thiệu giả định Semantic Overlap để làm bàn đạp cho Milestone 3 & Lab 2 cuối kỳ).
+  - [ ] *Long:* Rà soát lại toàn bộ code trong repo, đảm bảo mọi hàm đều có docstrings chuẩn và file `requirements.txt` sạch sẽ.
 * **Ngày 16/11 (Thứ 2): Tổng rà soát Speaker Notes toàn bộ 28 Slide**
-  * *Hiên:* Đọc từng slide kèm Speaker Notes, biên tập câu chữ mạch lạc, bảo đảm văn phong tự nhiên.
-  * *Long:* Kiểm tra tính chính xác của các công thức toán và số liệu thực nghiệm trong Notes, bảo đảm không có slide nào vượt quá 500 từ.
+  - [ ] *Hiên:* Đọc từng slide kèm Speaker Notes, biên tập câu chữ mạch lạc, bảo đảm văn phong tự nhiên.
+  - [ ] *Long:* Kiểm tra tính chính xác của các công thức toán và số liệu thực nghiệm trong Notes, bảo đảm không có slide nào vượt quá 500 từ.
 * **Ngày 17/11 (Thứ 3): Kiểm tra Chuẩn Trích dẫn IEEE & Định dạng**
-  * *Hiên:* Rà soát từng slide để bảo đảm có footnote trích dẫn chuẩn IEEE `[X]` ở chân trang. Bảo đảm không có slide references thừa ở cuối.
-  * *Long:* Đóng gói Jupyter Notebook hoàn chỉnh `notebooks/reproduction_pipeline.ipynb` cho phép chạy từ đầu đến cuối một cách thông suốt.
+  - [ ] *Hiên:* Rà soát từng slide để bảo đảm có footnote trích dẫn chuẩn IEEE `[X]` ở chân trang. Bảo đảm không có slide references thừa ở cuối.
+  - [ ] *Long:* Đóng gói Jupyter Notebook hoàn chỉnh `notebooks/reproduction_pipeline.ipynb` cho phép chạy từ đầu đến cuối một cách thông suốt.
 * **Ngày 18/11 (Thứ 4): Hoàn thiện README.md của Repository**
-  * *Hiên & Long:* Cập nhật file `README.md` chính thức trên GitHub:
-    * Thông tin nhóm và Citation IEEE của bài báo.
-    * Tuyên bố phạm vi Core Scope.
-    * Bảng Mapping Table đầy đủ (Tên thực nghiệm - Script - Link W&B Run - Kết quả tóm tắt).
-    * Bảng Deviation Table đối chiếu kết quả.
-    * Hướng dẫn chạy mã nguồn chi tiết.
+  - [ ] *Hiên & Long:* Cập nhật file `README.md` chính thức trên GitHub:
+    - [ ] Thông tin nhóm và Citation IEEE của bài báo.
+    - [ ] Tuyên bố phạm vi Core Scope.
+    - [ ] Bảng Mapping Table đầy đủ (Tên thực nghiệm - Script - Link W&B Run - Kết quả tóm tắt).
+    - [ ] Bảng Deviation Table đối chiếu kết quả.
+    - [ ] Hướng dẫn chạy mã nguồn chi tiết.
 * **Ngày 19/11 (Thứ 5): Kiểm tra Kỹ thuật Nghiêm ngặt (Audit Gate)**
-  * *Chung:*
-    * Đếm lại tổng số slide: Đúng **28 slide** (nằm gọn trong 20 – 40).
-    * Kiểm tra dung lượng file `.pptx`: Phải **dưới 20 MB** (nén ảnh nếu cần).
-    * Kiểm tra link repo trên trình duyệt ẩn danh: Bảo đảm Repo là **Public**.
-    * Kiểm tra link W&B: Bảo đảm Project là **Public**.
+  - [ ] *Chung:*
+    - [ ] Đếm lại tổng số slide: Đúng **28 slide** (nằm gọn trong 20 – 40).
+    - [ ] Kiểm tra dung lượng file `.pptx`: Phải **dưới 20 MB** (nén ảnh nếu cần).
+    - [ ] Kiểm tra link repo trên trình duyệt ẩn danh: Bảo đảm Repo là **Public**.
+    - [ ] Kiểm tra link W&B: Bảo đảm Project là **Public**.
 * **Ngày 20/11 (Thứ 6): ĐÓNG GÓI VÀ NỘP BÀI (TRƯỚC HẠN 24 GIỜ)**
-  * *Hiên:* Xuất bản file PowerPoint cuối cùng `slides/final_submission_TEEN.pptx`.
-  * *Chung:* Tiến hành nộp file `.pptx` và link GitHub repo lên hệ thống Moodle. Chụp màn hình xác nhận đã nộp thành công.
+  - [ ] *Hiên:* Xuất bản file PowerPoint cuối cùng `slides/final_submission_TEEN.pptx`.
+  - [ ] *Chung:* Tiến hành nộp file `.pptx` và link GitHub repo lên hệ thống Moodle. Chụp màn hình xác nhận đã nộp thành công.
 * **Ngày 21/11 (Thứ 7): Hạn chót Moodle (Buffer Time)**
-  * Ngày dự phòng cho các sự cố kỹ thuật hoặc nghẽn mạng của hệ thống. Nhóm hoàn thành đúng hạn và chuẩn bị cho giai đoạn 2.
+  - [ ] *Chung:* Ngày dự phòng cho các sự cố kỹ thuật hoặc nghẽn mạng của hệ thống. Nhóm hoàn thành đúng hạn và chuẩn bị cho giai đoạn 2.
 
 ---
 

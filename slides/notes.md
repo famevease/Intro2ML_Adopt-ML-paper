@@ -44,7 +44,7 @@
 * **Slide Type:** Problem Formulation & Motivation
 * **Visual Elements:**
   * **Layout:** 2-Column Split Screen.
-  * **Left Column (Timeline Schematic `slides/assets/fscil_problem.png`):** Sequential task streaming $\mathcal{D}_0 \to \mathcal{D}_1 \to \dots \to \mathcal{D}_T$; red explosion icon `💥 Catastrophic Forgetting` over past model weights.
+  * **Left Column (Timeline Schematic - drawn directly in PPT):** Sequential task streaming $\mathcal{D}_0 \to \mathcal{D}_1 \to \dots \to \mathcal{D}_T$; red explosion icon `💥 Catastrophic Forgetting` over past model weights.
   * **Right Column (2 Stacked Concept Cards):** Top card defines CIL + motivating scenario; bottom card formalizes the Stability-Plasticity dilemma.
   * **Color Accents:** Blue = Learned Base Data; Red = Forgetting / Interference Alert.
 * **On-Slide Content:**
