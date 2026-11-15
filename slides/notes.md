@@ -74,7 +74,7 @@
 * **Visual Elements:**
   * **Layout:** 2-Column Asymmetric Comparison (Left: Data Volume Contrast, Right: Edge Application Card).
   * **Left Graphic:** Visual bar comparison: Base Class (Large blue bar: $500$ images) vs. Incremental Class (Microscopic amber bar: $5$ images).
-  * **Right Card (Case Study):** Edge facial recognition / biometric access control with 3 constraint badges: `🚫 Zero Data Storage (GDPR)`, `⚡ Edge Microprocessor`, `🎯 All-Class Discrimination`.
+  * **Right Card (Case Study):** Edge facial recognition / biometric access control with 3 constraint badges: `🚫 Zero Historical Data Storage`, `⚡ Edge Microprocessor`, `🎯 All-Class Discrimination`.
 * **On-Slide Content:**
   * **Left: Severe Supervised Asymmetry:**
     * **Base Session ($\mathcal{D}_0$):** 60 classes $\times$ 500 samples (Dense representation space)
@@ -83,12 +83,12 @@
     * **Setup:** Camera system has learned 1,000 existing student faces
     * **Event:** 5 transfer students arrive ($5$ snapshots each)
     * **Physical Constraints:**
-      * 🚫 *Privacy Law (GDPR):* Illegal to store raw historical images of the 1,000 students
+      * 🚫 *Data Privacy Concerns:* Prohibited from storing raw facial archives of existing students
       * ⚡ *Edge Compute:* Camera chips cannot run multi-epoch backpropagation
     * **Operational Goal:** Discriminate among all 1,005 identities in real time
 * **Speaker Notes:**
   To bridge the gap between academic benchmarks and physical reality, Few-Shot Class-Incremental Learning (FSCIL) was introduced. In standard CIL, novel classes are assumed to have abundant data. In FSCIL, however, the model encounters a realistic asymmetry: while base classes possess ample training examples, novel incremental classes arrive in an extreme few-shot regime—typically 5 classes at a time with only 5 images per class (5-way 5-shot).
-  Consider a concrete real-world application: an automated smart campus security system. The system has already learned 1,000 student faces during orientation. Halfway through the term, five transfer students join. The edge camera can only obtain 5 quick snapshots of each newcomer. Under strict privacy regulations like GDPR, the system is legally prohibited from permanently storing raw facial images of the original 1,000 students. Furthermore, edge microprocessors cannot support multi-epoch backpropagation.
+  Consider a concrete real-world application: an automated smart campus security system. The system has already learned 1,000 student faces during orientation. Halfway through the term, five transfer students join. The edge camera can only obtain 5 quick snapshots of each newcomer. Due to strict user privacy concerns and storage constraints, the system cannot permanently store raw facial images of the original 1,000 students. Furthermore, edge microprocessors cannot support multi-epoch backpropagation.
   The system must immediately update its classifier to distinguish all 1,005 individuals accurately. This dual constraint—data scarcity and zero data replay—defines the high stakes of FSCIL.
 * **Footnote / Citation:**
   `[4]` X. Tao et al., "Few-shot class-incremental learning," in CVPR, 2020.
@@ -139,13 +139,13 @@
     * Episodic exemplar buffer: $\mathcal{P}_{base} \subset \mathcal{D}_0$
     * Dual-objective loss: $\mathcal{L} = \mathcal{L}_{CE} + \lambda \mathcal{L}_{KD}$ (penalizes logit shifts)
   * **Critical Flaws in Few-Shot Regimes:**
-    * **Storage & Privacy:** Retaining raw exemplars violates GDPR/HIPAA regulations
+    * **Storage & Privacy:** Retaining raw exemplars incurs high memory overhead and raises privacy concerns
     * **Supervisory Asymmetry:** 5 novel samples overwhelmed by dense base buffer $\to$ noisy gradient signals & representation drift
   * **Practical Consequence:** Inviable under zero-storage constraints; performance degrades across sessions
 * **Speaker Notes:**
   Let us now critically evaluate how prior research has attempted to address this challenge, beginning with Rehearsal and Distillation methods, exemplified by the seminal iCaRL framework published at CVPR 2017.
   The core idea of iCaRL is twofold: store a small subset of historical exemplars in a memory buffer, and apply Knowledge Distillation using the previous model checkpoint as a teacher to regularize parameter updates.
-  While this approach achieved reasonable success in standard incremental learning, it suffers from two fatal limitations in FSCIL. First, the assumption of an exemplar buffer violates strict privacy regulations such as GDPR. In commercial biometric or healthcare systems, retaining historical user data is legally forbidden.
+  While this approach achieved reasonable success in standard incremental learning, it suffers from two fatal limitations in FSCIL. First, the assumption of an exemplar buffer incurs unacceptable memory footprint and raises severe data privacy concerns. In commercial biometric and security deployments, permanently retaining historical user data is strictly restricted.
   Second, under the extreme asymmetry of FSCIL—where novel classes possess only 5 samples while the replay buffer retains dozens of base exemplars—the distillation loss produces noisy, distorted gradients. Knowledge distillation cannot compensate for extreme few-shot scarcity, leading to severe representation drift.
 * **Footnote / Citation:**
   `[9]` S.-A. Rebuffi et al., "iCaRL: Incremental classifier and representation learning," in CVPR, 2017.
@@ -159,7 +159,7 @@
   * **Layout:** Left (GNN topological graph propagating node weights) + Right (2 Evaluation Cards: Compute Cost & Meta-Overfitting).
   * **Badges:** `[CVPR 2020 / CVPR 2021]` | `⚠️ Second-Order Gradients` | `⚠️ Compute-Heavy`.
 * **On-Slide Content:**
-  * **Core Mechanism (TOPIC / CEC):**
+  * **Core Mechanism (TOPIC `[4]` / CEC `[10]`):**
     * Simulates incremental few-shot episodes during base pretraining
     * Graph Neural Network (GNN) models pairwise prototype topology to evolve classifier weights
   * **Critical Limitations:**
@@ -167,11 +167,12 @@
     * **Meta-Overfitting:** Topology rules conditioned strictly on base distribution; fails when novel classes diverge
   * **Practical Consequence:** Fragile optimization pipelines and poor scalability on edge microprocessors
 * **Speaker Notes:**
-  A second prominent paradigm relies on Meta-Learning and Dynamic Graph Neural Networks, such as TOPIC (CVPR 2020) and CEC (CVPR 2021).
+  A second prominent paradigm relies on Meta-Learning and Dynamic Graph Neural Networks, such as TOPIC (CVPR 2020) `[4]` and CEC (CVPR 2021) `[10]`.
   These methods attempt to "learn how to incrementally learn." During base training, they simulate synthetic few-shot episodes and employ a Graph Neural Network to model relational dependencies between class prototypes, dynamically updating node weights across sessions.
   However, this architectural sophistication comes at a steep price. First, bi-level meta-optimization requires second-order gradient evaluations, rendering training extraordinarily compute-intensive and prone to optimization collapse.
   Second, and more fundamentally: the relational topological patterns learned by the GNN are inherently conditioned on the semantic manifold of the base dataset. When incremental classes from unfamiliar visual domains arrive, the graph propagation mechanism propagates misleading structural context, destabilizing the classifier. This highlights the need for a simpler, more robust inductive bias.
 * **Footnote / Citation:**
+  `[4]` X. Tao et al., "Few-shot class-incremental learning," in CVPR, 2020.
   `[10]` C. Zhang et al., "Few-shot incremental learning with continually evolved classifiers," in CVPR, 2021.
 
 ---
@@ -181,23 +182,23 @@
 * **Slide Type:** Theoretical Defect Analysis
 * **Visual Elements:**
   * **Layout:** 2D Feature Space Diagram (Left) + Statistical Analysis Card (Right).
-  * **Diagram Details:** True centroid $\boldsymbol{\mu}^*_k$ vs. noisy 5-shot empirical mean $\mathbf{c}_k$; red vector showing sampling drift $\boldsymbol{\epsilon}_k$ encroaching into neighboring base class decision regions.
+  * **Diagram Details:** True centroid $\boldsymbol{\mu}^*_k$ vs. noisy 5-shot empirical mean $\mathbf{c}_k$; red vector showing prototype drift $\boldsymbol{\epsilon}_k$ encroaching into neighboring base class decision regions.
 * **On-Slide Content:**
-  * **Core Mechanism (Frozen NCM):**
+  * **Core Mechanism – Naive Nearest Class Mean (NCM `[11]`):**
     * Freeze backbone $f_{\boldsymbol{\theta}}$ after Base Session
-    * Compute raw sample average: $\mathbf{c}_k = \frac{1}{K}\sum_{i=1}^K f_{\boldsymbol{\theta}}(\mathbf{x}_i^{(k)})$ ($K=5$)
-  * **Theoretical Flaw: High Sample Variance:**
-    * Estimator covariance: $\text{Var}(\mathbf{c}_k) = \frac{1}{K}\boldsymbol{\Sigma}_k = 0.2\boldsymbol{\Sigma}_k$ (severe variance)
-    * Outliers & background clutter displace $\mathbf{c}_k$ away from true centroid $\boldsymbol{\mu}^*_k$
+    * Compute raw sample average as class prototype: $\mathbf{c}_k = \frac{1}{K}\sum_{i=1}^K f_{\boldsymbol{\theta}}(\mathbf{x}_i^{(k)})$ ($K=5$) `[11]`
+  * **Theoretical Flaw – High Sample Variance & Prototype Drift `[12]`:**
+    * Estimator covariance: $\text{Var}(\mathbf{c}_k) = \frac{1}{K}\boldsymbol{\Sigma}_k = 0.2\boldsymbol{\Sigma}_k$ (severe estimation variance)
+    * Outliers & sampling noise displace $\mathbf{c}_k$ away from true centroid $\boldsymbol{\mu}^*_k$ $\to$ **inevitable prototype drift / bias `[12]`**
   * **Catastrophic Consequence:**
     * Noisy novel prototypes overlap with base class clusters $\to$ high false-positive misclassification into base classes
 * **Speaker Notes:**
-  To completely avoid gradient instability and memory overhead, a third direction adopts the Nearest Class Mean (NCM) classifier with a frozen feature backbone. For each novel class, one simply computes the empirical mean vector of the 5 available support samples and performs nearest-neighbor classification in the latent embedding space.
+  To completely avoid gradient instability and memory overhead, a third direction adopts the Nearest Class Mean (NCM) classifier with a frozen feature backbone, popularized in prototype-based few-shot learning by Snell et al. `[11]`. For each novel class, one simply computes the empirical mean vector of the 5 available support samples and performs nearest-neighbor classification in the latent embedding space.
   While computationally appealing, naive NCM fails catastrophically due to high estimation variance. From elementary statistics, the variance of an empirical sample mean scales as Sigma over $K$. When $K=5$, the sample centroid is severely perturbed by arbitrary factors such as lighting, camera angle, or background clutter.
-  As illustrated on the slide, the noisy prototype $\mathbf{c}_k$ drifts away from the true population mean $\boldsymbol{\mu}^*_k$. Because base classes are densely packed in the representation space, this drift causes novel class prototypes to wander into the decision regions of neighboring base classes. Consequently, during inference, the model exhibits a severe false-positive bias, misclassifying novel test instances as base classes.
+  As illustrated on the slide, this estimation error induces severe prototype drift: the empirical prototype $\mathbf{c}_k$ drifts away from the true population centroid $\boldsymbol{\mu}^*_k$, a fundamental few-shot defect formalized by Liu et al. in prototype rectification `[12]`. Because base classes are densely packed in the representation space, this drift causes novel class prototypes to wander into the decision regions of neighboring base classes. Consequently, during inference, the model exhibits a severe false-positive bias, misclassifying novel test instances as base classes.
 * **Footnote / Citation:**
-  `[11]` J. Snell, K. Swersky, and R. Zemel, "Prototypical networks for few-shot learning," in NIPS, 2017.
-  `[12]` J. Liu et al., "Prototype rectification for few-shot learning," in ECCV, 2020.
+  `[11]` J. Snell, K. Swersky, and R. Zemel, "Prototypical networks for few-shot learning," in NIPS, 2017. *(Nearest Class Mean / Prototype-based classification)*
+  `[12]` J. Liu et al., "Prototype rectification for few-shot learning," in ECCV, 2020. *(Biased prototypes & Prototype drift)*
 
 ---
 
