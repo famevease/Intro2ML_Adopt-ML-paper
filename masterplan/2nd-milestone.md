@@ -219,10 +219,10 @@ Lộ trình 21 ngày được chia thành 3 giai đoạn nhịp nhàng, tối ư
 * **Ngày 31/10 (Thứ 7): Họp khởi động & Thiết lập công cụ**
   - [x] *Chung:* Họp 1 giờ qua Google Meet, thống nhất bài báo TEEN và tuyên bố Core Scope trên CIFAR-100.
   - [x] *Hiên:* Tạo GitHub repo công khai. Tạo project chung trên Weights & Biases (W&B), gửi invite cho Long.
-  - [ ] *Long:* Thiết lập môi trường ảo Python 3.9+, cài đặt PyTorch và kiểm tra GPU trên Google Colab.
+  - [x] *Long:* Thiết lập môi trường ảo Python 3.9+, cài đặt PyTorch và kiểm tra GPU trên Google Colab.
 * **Ngày 01/11 (Chủ nhật): Cấu trúc Repo & Template PowerPoint**
   - [x] *Hiên:* Commit cấu trúc thư mục ban đầu (`src/`, `slides/`, `slides/assets/`, `notebooks/`). Dựng template PowerPoint chuẩn 16:9, chèn sẵn ô Speaker Notes và vị trí footnote IEEE.
-  - [ ] *Long:* Tải mã nguồn gốc của tác giả TEEN về máy, đọc script huấn luyện để ghi nhận các siêu tham số mặc định.
+  - [x] *Long:* Tải mã nguồn gốc của tác giả TEEN về máy, đọc script huấn luyện để ghi nhận các siêu tham số mặc định.
 * **Ngày 02/11 (Thứ 2): Dàn ý chi tiết & Bóc tách mã giả**
   - [x] *Hiên:* Soạn dàn ý chi tiết 28 slide vào file `slides/notes.md`.
   - [ ] *Long:* Bóc tách công thức Section 3 ra mã giả (pseudocode), xác định danh sách các hàm cần tự viết trong `src/calibration.py`.
