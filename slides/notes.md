@@ -167,7 +167,7 @@
     * **Meta-Overfitting:** Topology rules conditioned strictly on base distribution; fails when novel classes diverge
   * **Practical Consequence:** Fragile optimization pipelines and poor scalability on edge microprocessors
 * **Speaker Notes:**
-  A second prominent paradigm relies on Meta-Learning and Dynamic Graph Neural Networks, such as TOPIC (CVPR 2020) `[4]` and CEC (CVPR 2021) `[10]`.
+  A second prominent paradigm relies on Meta-Learning and Dynamic Graph Neural Networks, such as TOPIC (CVPR 2020) and CEC (CVPR 2021).
   These methods attempt to "learn how to incrementally learn." During base training, they simulate synthetic few-shot episodes and employ a Graph Neural Network to model relational dependencies between class prototypes, dynamically updating node weights across sessions.
   However, this architectural sophistication comes at a steep price. First, bi-level meta-optimization requires second-order gradient evaluations, rendering training extraordinarily compute-intensive and prone to optimization collapse.
   Second, and more fundamentally: the relational topological patterns learned by the GNN are inherently conditioned on the semantic manifold of the base dataset. When incremental classes from unfamiliar visual domains arrive, the graph propagation mechanism propagates misleading structural context, destabilizing the classifier. This highlights the need for a simpler, more robust inductive bias.
@@ -193,9 +193,9 @@
   * **Catastrophic Consequence:**
     * Noisy novel prototypes overlap with base class clusters $\to$ high false-positive misclassification into base classes
 * **Speaker Notes:**
-  To completely avoid gradient instability and memory overhead, a third direction adopts the Nearest Class Mean (NCM) classifier with a frozen feature backbone, popularized in prototype-based few-shot learning by Snell et al. `[11]`. For each novel class, one simply computes the empirical mean vector of the 5 available support samples and performs nearest-neighbor classification in the latent embedding space.
+  To completely avoid gradient instability and memory overhead, a third direction adopts the Nearest Class Mean (NCM) classifier with a frozen feature backbone, popularized in prototype-based few-shot learning by Snell et al. For each novel class, one simply computes the empirical mean vector of the 5 available support samples and performs nearest-neighbor classification in the latent embedding space.
   While computationally appealing, naive NCM fails catastrophically due to high estimation variance. From elementary statistics, the variance of an empirical sample mean scales as Sigma over $K$. When $K=5$, the sample centroid is severely perturbed by arbitrary factors such as lighting, camera angle, or background clutter.
-  As illustrated on the slide, this estimation error induces severe prototype drift: the empirical prototype $\mathbf{c}_k$ drifts away from the true population centroid $\boldsymbol{\mu}^*_k$, a fundamental few-shot defect formalized by Liu et al. in prototype rectification `[12]`. Because base classes are densely packed in the representation space, this drift causes novel class prototypes to wander into the decision regions of neighboring base classes. Consequently, during inference, the model exhibits a severe false-positive bias, misclassifying novel test instances as base classes.
+  As illustrated on the slide, this estimation error induces severe prototype drift: the empirical prototype $\mathbf{c}_k$ drifts away from the true population centroid $\boldsymbol{\mu}^*_k$, a fundamental few-shot defect formalized by Liu et al. in prototype rectification. Because base classes are densely packed in the representation space, this drift causes novel class prototypes to wander into the decision regions of neighboring base classes. Consequently, during inference, the model exhibits a severe false-positive bias, misclassifying novel test instances as base classes.
 * **Footnote / Citation:**
   `[11]` J. Snell, K. Swersky, and R. Zemel, "Prototypical networks for few-shot learning," in NIPS, 2017. *(Nearest Class Mean / Prototype-based classification)*
   `[12]` J. Liu et al., "Prototype rectification for few-shot learning," in ECCV, 2020. *(Biased prototypes & Prototype drift)*
@@ -210,7 +210,7 @@
   * **Visual Contrast:** Red crosses vs. green checkmarks highlighting TEEN’s clean advantages.
 * **On-Slide Content:**
   * **Comparative Landscape Matrix:**
-    | Dimension | Replay (iCaRL) | Meta-GNN (CEC) | Naive NCM | **TEEN (NeurIPS 2023)** |
+    | Dimension | Replay (iCaRL `[9]`) | Meta-GNN (CEC `[10]`) | Naive NCM `[11]` | **TEEN `[1]` (NeurIPS 2023)** |
     | :--- | :---: | :---: | :---: | :---: |
     | **No Raw Exemplar Replay** | ❌ | ⚠️ | ✅ | **✅ (Zero storage)** |
     | **Training-Free Incremental** | ❌ | ❌ | ✅ | **✅ (Closed-form)** |
@@ -222,12 +222,15 @@
   * **TEEN Positioning:** Exploits base semantic structure to geometrically calibrate noisy prototypes in closed form.
 * **Speaker Notes:**
   This synthesis slide captures the missing research gap that defines the scientific value of TEEN.
-  Looking at our comparative matrix: Replay-based methods fail on data privacy and edge memory. Meta-learning GNNs introduce excessive computational complexity and remain prone to meta-overfitting. Naive NCM is computationally lightweight and training-free, but suffers from debilitating prototype drift due to extreme sample variance.
+  Looking at our comparative matrix: Replay-based methods such as iCaRL require storing historical exemplars, creating high memory overhead and raising user data privacy concerns. Meta-learning GNNs like CEC introduce excessive computational complexity and remain prone to meta-overfitting. Naive NCM is computationally lightweight and training-free, but suffers from debilitating prototype drift due to extreme sample variance.
   Crucially, all prior approaches overlooked a fundamental asset: the Base Session already learned a rich, high-capacity semantic metric space containing hundreds of robust visual concepts.
   This identifies the exact gap: Can we leverage the existing semantic structure of base classes to mathematically correct the sampling error of novel few-shot prototypes, in a completely training-free manner, without storing a single historical image?
   This is the precise breakthrough introduced by TEEN.
 * **Footnote / Citation:**
   `[1]` Q.-W. Wang et al., "Few-Shot Class-Incremental Learning via Training-Free Prototype Calibration," in NeurIPS, 2023.
+  `[9]` S.-A. Rebuffi et al., "iCaRL: Incremental classifier and representation learning," in CVPR, 2017.
+  `[10]` C. Zhang et al., "Few-shot incremental learning with continually evolved classifiers," in CVPR, 2021.
+  `[11]` J. Snell, K. Swersky, and R. Zemel, "Prototypical networks for few-shot learning," in NIPS, 2017.
 
 ---
 
@@ -237,24 +240,24 @@
 * **Section:** Part 3 – Novelty & Contributions
 * **Slide Type:** Conceptual Paradigm Shift
 * **Visual Elements:**
-  * **Layout:** Split Screen (Left: Architecture with prominent 🔒 Lock Badge on backbone, Right: Paradigm Shift & Occam's Razor Card).
+  * **Layout:** Top Center Pipeline Graphic (`slides/assets/teen_pipeline.png`) + Bottom Comparison Cards.
   * **Slogan Banner:** *"Zero Gradient Updates in Continual Learning"*.
-  * **Color Code:** Gold = Locked parameters; Emerald = Geometric vector calibration.
+  * **Badges:** `🔒 Locked Backbone (∇θ = 0)` | `⚡ <2 ms Latency` | `📐 Occam's Razor [13]`.
 * **On-Slide Content:**
-  * **Paradigm Shift:**
-    * **Traditional View:** Continual learning requires weight adaptation ($\boldsymbol{\theta}_t \leftarrow \boldsymbol{\theta}_{t-1} - \eta \nabla \mathcal{L}$)
-    * **TEEN View:** Weight updates under $K=5$ are ill-posed $\to$ **Lock $\boldsymbol{\theta}_t \equiv \boldsymbol{\theta}_0$** and solve continual learning via **deterministic vector geometry calibration**
-  * **Theoretical Pillar – [Occam's Razor (Lecture 17)](https://work.caltech.edu/slides/slides17.pdf) `[13]`:**
-    * Zero parameter degrees of freedom during incremental tasks $\to$ completely eliminates catastrophic forgetting by design
-  * **Operational Advantages:**
-    * 🔒 **Zero Forgetting:** Base class representations remain mathematically invariant
-    * ⚡ **Instant Adaptation:** Closed-form vector update in $<2$ ms
-    * 🎯 **100% Deterministic:** Eliminates optimization divergence and gradient noise
+  * **Pipeline Workflow (TEEN):**
+    * `Novel Support (5-shot)` $\to$ `Frozen Backbone (f_θ)` $\to$ `Raw Prototype (c_k)` $\to$ `Semantic Calibration (+ Base c_b)` $\to$ `Cosine Classifier (ŷ)`.
+  * **The Paradigm Shift:**
+    * **Traditional:** $\boldsymbol{\theta}_t \leftarrow \boldsymbol{\theta}_{t-1} - \eta \nabla \mathcal{L}$ *(Severe overfitting & catastrophic forgetting under $K=5$)*
+    * **TEEN:** **Lock $\boldsymbol{\theta}_t \equiv \boldsymbol{\theta}_0$** *(Continual learning via deterministic vector geometry)*
+  * **Core Pillars:**
+    * 🔒 **Zero Forgetting:** Representations remain strictly invariant ($\nabla_{\boldsymbol{\theta}} = \mathbf{0}$)
+    * ⚡ **Instant Adaptation:** Closed-form vector update in $<2$ ms (zero backpropagation)
 * **Speaker Notes:**
   Slide 9 presents the core philosophy of TEEN, representing a bold paradigm shift in continual learning methodology.
   For years, the continual learning community operated under the premise that novel knowledge requires parameter adaptation. TEEN challenges this assumption: under few-shot conditions, modifying millions of neural network weights from 5 samples is fundamentally ill-posed and mathematically hazardous.
   Instead, TEEN proposes the Training-Free Paradigm. The deep backbone network is fully trained once on the diverse base classes and then permanently frozen. Across all subsequent incremental sessions, not a single gradient is computed. There is zero backpropagation, zero weight decay, and zero optimizer state tracking.
-  Connecting directly to [Lecture 17 on Occam's Razor](https://work.caltech.edu/slides/slides17.pdf) `[13]`: the simplest model that explains the observations is often the most robust. By freezing network weights, the hypothesis space during incremental sessions is strictly constrained, completely eliminating catastrophic forgetting by design. The entire problem of continual learning is converted from parameter optimization into geometric post-processing in vector space.
+  Notice the pipeline diagram displayed at the top: we show this high-level workflow here to provide an intuitive visual grasp of the training-free architecture—data flows strictly forward through a locked backbone, with zero gradient feedback loops. We will revisit and dissect the exact mathematical mechanics of each individual block in comprehensive detail on Slide 12.
+  Connecting directly to Lecture 17 on Occam's Razor: the simplest model that explains the observations is often the most robust. By freezing network weights, the hypothesis space during incremental sessions is strictly constrained, completely eliminating catastrophic forgetting by design. The entire problem of continual learning is converted from parameter optimization into geometric post-processing in vector space.
 * **Footnote / Citation:**
   `[1]` Q.-W. Wang et al., "Few-Shot Class-Incremental Learning via Training-Free Prototype Calibration," in NeurIPS, 2023.
   `[13]` Y. S. Abu-Mostafa, "Lecture 17 – Three Learning Principles," *CS 156: Learning From Data*, California Institute of Technology, 2012. [Online]. Available: https://work.caltech.edu/slides/slides17.pdf
