@@ -57,7 +57,7 @@ Mô hình làm việc: **Chéo cánh (Cross-functional)** nhằm đảm bảo c�
   • Viết src/ & module calibration.py           • Dựng Template Slide Deck 16:9
   • Huấn luyện Base Session CIFAR-100           • Tự vẽ Diagrams (slides/assets/)
   • Chạy 8 Incremental Sessions                 • Soạn lý thuyết M2 (Slide 1 - 16)
-  • Trích xuất Metrics & Log W&B                • Chạy Sensitivity Sweep (alpha)
+  • Trích xuất Metrics & Log W&B                • Chạy Sensitivity Sweep (alpha, tau)
               │                                               │
               └───────────────────────┬───────────────────────┘
                                       │
@@ -73,7 +73,7 @@ Mô hình làm việc: **Chéo cánh (Cross-functional)** nhằm đảm bảo c�
 | :--- | :--- | :--- | :--- |
 | **Lý thuyết & Bối cảnh** | Đọc sâu Section 3 & 4 (Thuật toán chi tiết, phân chia dataset CIFAR-100). | Đọc sâu Section 1 & 2 (Bối cảnh FSCIL, các phương pháp tiền nhiệm và hạn chế). | Cùng thống nhất bảng ký hiệu toán học chung cho slide và code. |
 | **Slide Deck (45% điểm)** | Cung cấp số liệu đo được, biểu đồ W&B, soạn Notes phần Thực nghiệm & Sai lệch kỹ thuật. | Thiết kế template chuẩn 16:9, tự vẽ 100% sơ đồ vào `slides/assets/`, soạn Notes phần Lý thuyết. | Rà soát chéo: đảm bảo 100% slide có notes ($\le 500$ từ) và footnote IEEE chuẩn. |
-| **Mã nguồn (Lab 1)** | Tự viết module `src/calibration.py`, script train Base session và 8 Incremental sessions trên CIFAR-100. | Chạy thử nghiệm mở rộng: Quét độ nhạy siêu tham số $\alpha \in [0.1, 0.9]$ trên W&B. | Đảm bảo code chạy độc lập, cố định seed, không phụ thuộc code tác giả. |
+| **Mã nguồn (Lab 1)** | Tự viết module `src/calibration.py`, script train Base session và 8 Incremental sessions trên CIFAR-100. | Chạy thử nghiệm mở rộng: Quét độ nhạy siêu tham số $\alpha \in \{0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9\}$ (với $\alpha = 0.0$ làm mốc đối chứng khi không hiệu chỉnh) và $\tau \in \{8, 16, 32, 64\}$ trên W&B. | Đảm bảo code chạy độc lập, cố định seed, không phụ thuộc code tác giả. |
 | **Repo & Báo cáo** | Viết docstrings cho từng hàm, kiểm tra pipeline chạy thông qua `requirements.txt`. | Khởi tạo repo, viết file `README.md` hoàn chỉnh (Mapping Table & Deviation Table). | Kiểm tra tính public của link W&B và link GitHub. |
 
 ---
@@ -87,14 +87,13 @@ Mô hình làm việc: **Chéo cánh (Cross-functional)** nhằm đảm bảo c�
 
 ### 2. Cơ chế cốt lõi của TEEN (Training-Free Prototype Calibration)
 1. **Đóng băng Backbone:** Sau Session 0, đóng băng hoàn toàn mạng trích xuất đặc trưng $f_\theta(\cdot)$. Không dùng thêm bất kỳ bước tối ưu Gradient Descent nào ở các session sau.
-2. **Tính Prototype thô (Raw Prototype):** Với lớp mới $k$, trích xuất đặc trưng của 5 ảnh mẫu và lấy trung bình:
-   $$\mathbf{c}_k = \frac{1}{5} \sum_{i=1}^5 f_\theta(\mathbf{x}_i^{(k)})$$
-3. **Ước lượng Tương quan Ngữ nghĩa (Semantic Similarity):** Đo độ tương đồng Cosine giữa vector tâm lớp mới $\mathbf{c}_k$ với toàn bộ prototype các lớp base $\mathbf{c}_b \in \mathcal{C}_{base}$:
-   $$\text{sim}(\mathbf{c}_k, \mathbf{c}_b) = \frac{\mathbf{c}_k \cdot \mathbf{c}_b}{\|\mathbf{c}_k\|_2 \|\mathbf{c}_b\|_2}$$
-   Tính trọng số chuẩn hóa Softmax với nhiệt độ $\tau$:
-   $$w_b = \frac{\exp(\text{sim}(\mathbf{c}_k, \mathbf{c}_b) / \tau)}{\sum_{b' \in \mathcal{C}_{base}} \exp(\text{sim}(\mathbf{c}_k, \mathbf{c}_{b'}) / \tau)}$$
+2. **Tính Prototype thô (Raw Prototype):** Với lớp mới $n$, trích xuất đặc trưng của 5 ảnh mẫu và lấy trung bình:
+   $$\mathbf{c}_n = \frac{1}{5} \sum_{i=1}^5 f_\theta(\mathbf{x}_i^{(n)})$$
+3. **Ước lượng Tương quan Ngữ nghĩa (Semantic Similarity):** Đo độ tương đồng Cosine giữa vector tâm lớp mới $\mathbf{c}_n$ với toàn bộ $B$ prototype các lớp base $\mathbf{c}_b$ ($b = 0, \dots, B-1$), nhân với hệ số phóng đại $\tau$ rồi chuẩn hóa qua Softmax theo đúng Equations (5) & (6) của bài báo:
+   $$S_{b,n} = \frac{\mathbf{c}_b \cdot \mathbf{c}_n}{\Vert{}\mathbf{c}_b\Vert{}_2 \Vert{}\mathbf{c}_n\Vert{}_2} \cdot \tau, \qquad w_{b,n} = \frac{\exp(S_{b,n})}{\sum_{i=0}^{B-1} \exp(S_{i,n})}$$
+   *(Giải thích: Vì $\tau = 16 > 1$, phép nhân $\tau$ giúp phóng đại sự chênh lệch độ tương đồng Cosine trước khi qua Softmax để dồn trọng số vào các lớp base giống nhất; nếu chia cho $16$ sẽ làm phân phối bị san phẳng).*
 4. **Hiệu chỉnh Prototype bằng Tổ hợp Lồi (Convex Combination):** Kéo vector tâm lớp mới về phía các lớp base tương đồng để triệt tiêu sai lệch do lấy mẫu ít:
-   $$\bar{\mathbf{c}}_k = (1 - \alpha)\mathbf{c}_k + \alpha \sum_{b \in \mathcal{C}_{base}} w_b \mathbf{c}_b$$
+   $$\bar{\mathbf{c}}_n = (1 - \alpha)\mathbf{c}_n + \alpha \sum_{b=0}^{B-1} w_{b,n} \mathbf{c}_b$$
 5. **Phân loại (Inference):** Dùng bộ phân loại Nearest Prototype Classifier (khoảng cách Cosine hoặc Euclidean) trên toàn bộ các lớp đã học.
 
 ---
@@ -148,12 +147,12 @@ Tổng cộng: **28 slide** (thỏa mãn quy chuẩn 20–40 slide).
   * *Notes:* Đi bộ cùng người đọc qua từng khối xử lý trong không gian vector.
 * **Slide 13: Cơ chế Toán học 1 - Ước lượng Prototype Thô & Độ lệch Mẫu**
   * *Visual:* Công thức trung bình cộng mẫu và hình học 2D biểu diễn độ lệch do lấy mẫu ngẫu nhiên (Sampling Bias).
-  * *Notes:* Giải thích cặn kẽ tại sao $\mathbf{c}_k$ bị lệch khỏi tâm phân phối khi cỡ mẫu $N=5$.
+  * *Notes:* Giải thích cặn kẽ tại sao $\mathbf{c}_n$ bị lệch khỏi tâm phân phối khi cỡ mẫu $N=5$.
 * **Slide 14: Cơ chế Toán học 2 - Khai phá Tương quan Ngữ nghĩa (Semantic Similarity)**
   * *Visual:* Vòng tròn đo khoảng cách Cosine và công thức phân phối trọng số Softmax với nhiệt độ $\tau$.
   * *Notes:* Phân tích ý nghĩa hình học: Không gian Base class đã học được các thuộc tính thị giác khái quát, cho phép chiếu lớp mới lên tổ hợp các lớp cũ tương đồng.
 * **Slide 15: Cơ chế Toán học 3 - Hiệu chỉnh bằng Tổ hợp Lồi (Convex Combination)**
-  * *Visual:* Đồ thị vector 2D minh họa phép kéo: $\bar{\mathbf{c}}_k = (1 - \alpha)\mathbf{c}_k + \alpha \sum w_b \mathbf{c}_b$.
+  * *Visual:* Đồ thị vector 2D minh họa phép kéo: $\bar{\mathbf{c}}_n = (1 - \alpha)\mathbf{c}_n + \alpha \sum_{b=0}^{B-1} w_{b,n} \mathbf{c}_b$.
   * *Notes:* Phân tích vai trò của siêu tham số $\alpha \in [0, 1]$. Liên hệ với kỹ thuật co mẫu (Shrinkage estimation) và **Lecture 12 (Regularization)**.
 * **Slide 16: Phân tích Độ phức tạp Tính toán (Complexity Story)**
   * *Visual:* Bảng so sánh Big-O về thời gian huấn luyện và bộ nhớ inference giữa TEEN và tiền nhiệm.
@@ -180,9 +179,9 @@ Tổng cộng: **28 slide** (thỏa mãn quy chuẩn 20–40 slide).
 * **Slide 22: Bảng Đối chiếu Toàn diện (Comparison Table)**
   * *Visual:* Bảng số liệu chi tiết từng session (Paper, Rebuild, Sai lệch tương đối %), kèm link W&B run của từng cột.
   * *Notes:* Trình bày chi tiết từng con số: Sai lệch tương đối luôn giữ ở mức $< 1.5\%$, khẳng định nhóm tái lập thành công.
-* **Slide 23: Thực nghiệm Mở rộng - Quét Độ nhạy $\alpha$ (Sensitivity Sweep)**
-  * *Visual:* Biểu đồ cột/đường thể hiện độ chính xác trung bình khi quét $\alpha \in \{0.0, 0.2, 0.4, 0.6, 0.8, 1.0\}$.
-  * *Notes:* Phân tích kết quả: Khi $\alpha = 0$ (không hiệu chỉnh), hiệu năng rớt sâu; hiệu năng đạt đỉnh tại $\alpha \in [0.4, 0.6]$; khi $\alpha \to 1.0$, hiệu năng suy giảm nhẹ. Kèm link W&B sweep run.
+* **Slide 23: Thực nghiệm Mở rộng - Quét Độ nhạy $\alpha$ và $\tau$ (Sensitivity Sweep)**
+  * *Visual:* Biểu đồ đường/nhiệt thể hiện độ chính xác trung bình khi quét $\alpha \in \{0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9\}$ (kèm mốc đối chứng $\alpha = 0.0$ khi không hiệu chỉnh) và $\tau \in \{8, 16, 32, 64\}$ theo Section 6.3 của bài báo.
+  * *Notes:* Phân tích kết quả: Khi $\alpha = 0.0$ (không hiệu chỉnh), hiệu năng giảm so với khi có hiệu chỉnh; phân tích vùng đỉnh hiệu năng theo dải $\alpha$ chuẩn trên CIFAR-100 (mặc định bài báo $\alpha = 0.1$) và ảnh hưởng của hệ số phóng đại $\tau \in \{8, 16, 32, 64\}$ đến độ tập trung của phân phối Softmax. Kèm link W&B sweep run.
 
 ### PHẦN 7: PHÂN TÍCH SAI LỆCH & ĐỐI CHIẾU MÃ NGUỒN (Slide 24 – 26)
 * **Slide 24: Phân tích Sai lệch Kỹ thuật (Deviation Analysis)**
@@ -251,7 +250,7 @@ Lộ trình 21 ngày được chia thành 3 giai đoạn nhịp nhàng, tối ư
   - [ ] *Long:* Kiểm tra lại code, đẩy lên nhánh `main`, bàn giao script cho Hiên chạy sweep.
   - [ ] *Hiên:* Soạn Slide 17 – 19 (Benchmark CIFAR-100, tuyên bố Core Scope, tích hợp W&B).
 * **Ngày 11/11 (Thứ 4): Thực thi Sensitivity Sweep**
-  - [ ] *Hiên:* Chạy script quét độ nhạy `src/sweep_alpha.py` với $\alpha \in \{0.0, 0.2, 0.4, 0.6, 0.8, 1.0\}$, ghi nhận toàn bộ run vào project W&B chung. Xuất biểu đồ kết quả.
+  - [ ] *Hiên:* Chạy script quét độ nhạy `src/sweep_alpha.py` với $\alpha \in \{0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9\}$ (kèm mốc đối chứng $\alpha = 0.0$ khi không hiệu chỉnh) và $\tau \in \{8, 16, 32, 64\}$, ghi nhận toàn bộ run vào project W&B chung. Xuất biểu đồ kết quả.
   - [ ] *Long:* Lập bảng đối chiếu (Comparison Table) giữa số liệu nhóm đo được và số liệu Table 1 trong bài báo gốc.
 * **Ngày 12/11 (Thứ 5): Phân tích Sai lệch (Deviation Analysis)**
   - [ ] *Long:* So sánh output của code tự viết với output khi chạy code tác giả. Xác định rõ nguyên nhân gây sai lệch.
@@ -336,8 +335,8 @@ Lộ trình 21 ngày được chia thành 3 giai đoạn nhịp nhàng, tối ư
 | Thực nghiệm | Script / Notebook | Link Run W&B | Số liệu tóm tắt | Ghi chú kỹ thuật |
 | :--- | :--- | :--- | :--- | :--- |
 | **Base Session (60 classes)** | `src/train_base.py` | [wandb/teen-base-session](https://wandb.ai) | Acc: $64.32\%$ | Train ResNet 100 epochs, seed = 2026 |
-| **Incremental FSCIL (Sessions 1-8)** | `src/eval_incremental.py` | [wandb/teen-incremental-run](https://wandb.ai) | Acc cuối: $51.85\%$ | $\alpha = 0.6$, prototype calibration |
-| **Sensitivity Sweep ($\alpha \in [0, 1]$)** | `src/sweep_alpha.py` | [wandb/teen-alpha-sweep](https://wandb.ai) | $\alpha=0.6$ tối ưu | Quét 6 mức $\alpha$, 8 incremental sessions |
+| **Incremental FSCIL (Sessions 1-8)** | `src/eval_incremental.py` | [wandb/teen-incremental-run](https://wandb.ai) | Acc cuối: $51.85\%$ | $\alpha = 0.1, \tau = 16$ (mức mặc định của bài báo dành riêng cho CIFAR-100; $\alpha = 0.5$ chỉ dùng cho miniImageNet và CUB200), prototype calibration |
+| **Sensitivity Sweep ($\alpha \in [0.0, 0.9]$, $\tau \in \{8, 16, 32, 64\}$)** | `src/sweep_alpha.py` | [wandb/teen-alpha-sweep](https://wandb.ai) | Chờ cập nhật theo kết quả sweep | Quét $\alpha \in \{0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9\}$ và $\tau \in \{8, 16, 32, 64\}$, 8 incremental sessions |
 
 ### 2. Bảng Phân tích Sai lệch (Deviation Analysis Table)
 
