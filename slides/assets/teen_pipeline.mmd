@@ -4,15 +4,15 @@ flowchart LR
     %% Training-frEE prototype calibratioN for FSCIL
     %% ==========================================
 
-    A["1. Novel Support<br/>(5-shot images)"] 
-    --> B["2. Frozen Backbone<br/>(f_theta locked)"] 
-    --> C["3. Raw Prototype<br/>(Empirical Mean c_k)"] 
-    --> D["4. Semantic Calibration<br/>c_calib = (1-alpha) c_k + alpha c_context"] 
-    --> E["5. Calibrated Prototype<br/>(L2-normalized c_calib)"] 
-    --> F["6. Cosine Classifier<br/>(Predicted Label y)"]
+    A["1. Novel Support Data<br/>D_i (K-shot samples x_j)"] 
+    --> B["2. Frozen Feature Encoder<br/>ϕ_θ (Locked, ∇θ = 0)"] 
+    --> C["3. Raw Novel Prototype<br/>c_n = 1/K ∑ ϕ_θ(x_j)"] 
+    --> D["4. Semantic Calibration<br/>Δc_n = ∑ w_b,n c_b"] 
+    --> E["5. Calibrated Prototype<br/>c̄_n = (1-α)c_n + α Δc_n"] 
+    --> F["6. Cosine Classifier<br/>ŷ = argmax cos(ϕ_θ(x), c̄_c)"]
 
     %% Pre-computed Base Knowledge
-    BASE[("Base Prototypes<br/>{c_b}")] -.->|Semantic Weights w_b| D
+    BASE[("Base Prototypes<br/>{c_b} (b = 0..B-1)")] -.->|Semantic Weights w_b,n<br/>via Cosine Sim S_b,n| D
 
     %% Minimalist Modern Styling
     classDef default fill:#F8FAFC,stroke:#64748B,stroke-width:1.5px,color:#0F172A;

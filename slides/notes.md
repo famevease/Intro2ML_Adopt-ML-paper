@@ -331,8 +331,8 @@
 * **Slide Type:** Architectural Flowchart & System Diagram
 * **Visual Elements:**
   * **Layout:** Full-Width Process Pipeline Diagram (`slides/assets/teen_pipeline.png`).
-  * **5 Connected Process Blocks:**
-    `Support Images` $\to$ `Frozen Feature Encoder (ϕ_θ)` $\to$ `Raw Prototype Averaging (c_n)` $\to$ `Semantic Attention & Calibration (Δc_n)` $\to$ `Cosine Nearest Classifier`.
+  * **6 Connected Process Flow Blocks (matching `teen_pipeline.mmd`):**
+    `Support Data (D_i)` $\to$ `Frozen Encoder (ϕ_θ)` $\to$ `Raw Prototype (c_n)` $\to$ `Semantic Fusion (Δc_n)` $\to$ `Convex Combination (c̄_n)` $\to$ `Cosine Classifier (ŷ)`.
   * **Color Accents:** Blue = Base training (Session 0); Emerald = Training-free vector calibration (Sessions 1–8).
 * **On-Slide Content:**
   * **Stage 1 (Base Session 0):** Train feature encoder $\phi_\theta$ on $D_0 \to$ Extract base prototypes $\{c_b\}_{b=0}^{B-1} \to$ Permanently lock $\theta$.

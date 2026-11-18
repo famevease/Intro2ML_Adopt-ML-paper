@@ -242,7 +242,7 @@ Lộ trình 21 ngày được chia thành 3 giai đoạn nhịp nhàng, tối ư
   - [ ] *Hiên:* Dùng Figma/Draw.io vẽ sơ đồ kiến trúc tổng thể TEEN (`slides/assets/teen_pipeline.png`) và sơ đồ kéo vector bằng tổ hợp lồi (`slides/assets/convex_calibration.png`).
 * **Ngày 08/11 (Chủ nhật): Tự viết Module Hiệu chuẩn Prototype**
   - [ ] *Long:* Tự viết file `src/calibration.py` hoàn chỉnh từ công thức toán học (hàm tính raw prototype, cosine similarity, softmax weights, convex update). Viết docstrings đầy đủ.
-  - [ ] *Hiên:* Soạn Slide 9 – 12 (Tính mới của TEEN, Overall pipeline, ký hiệu toán học).
+  - [x] *Hiên:* Soạn Slide 9 – 12 (Tính mới của TEEN, Overall pipeline, ký hiệu toán học).
 * **Ngày 09/11 (Thứ 2): Chạy Incremental Sessions 1 đến 8**
   - [ ] *Long:* Viết `src/eval_incremental.py`: Đóng băng backbone, forward 5 ảnh/lớp, gọi hàm hiệu chuẩn từ `calibration.py`, đo Top-1 Accuracy trên toàn bộ các lớp đã học. Chạy xong 8 sessions, log W&B.
   - [ ] *Hiên:* Soạn Slide 13 – 16 (Cơ chế toán học, công thức hiệu chuẩn, độ phức tạp $O(1)$) kèm Speaker Notes phân tích cặn kẽ.
