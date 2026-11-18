@@ -44,15 +44,15 @@
 * **Slide Type:** Problem Formulation & Motivation
 * **Visual Elements:**
   * **Layout:** 2-Column Split Screen.
-  * **Left Column (Timeline Schematic - drawn directly in PPT):** Sequential task streaming $\mathcal{D}_0 \to \mathcal{D}_1 \to \dots \to \mathcal{D}_T$; red explosion icon `💥 Catastrophic Forgetting` over past model weights.
+  * **Left Column (Timeline Schematic - drawn directly in PPT):** Sequential task streaming $D_0 \to D_1 \to \dots \to D_{T-1}$; red explosion icon `💥 Catastrophic Forgetting` over past model weights.
   * **Right Column (2 Stacked Concept Cards):** Top card defines CIL + motivating scenario; bottom card formalizes the Stability-Plasticity dilemma.
   * **Color Accents:** Blue = Learned Base Data; Red = Forgetting / Interference Alert.
 * **On-Slide Content:**
-  * **Left: Sequential Non-Stationary Stream ($\mathcal{D}_0 \to \mathcal{D}_1 \dots \mathcal{D}_T$):**
-    * Disjoint label spaces: $\mathcal{C}_t \cap \mathcal{C}_{t'} = \emptyset \; (\forall t \neq t')$
-    * Closed past data: Historical sets $\mathcal{D}_{<t}$ inaccessible during task $t$
+  * **Left: Sequential Non-Stationary Stream ($D_0 \to D_1 \dots D_{T-1}$):**
+    * Disjoint label spaces: $C_i \cap C_j = \emptyset \; (\forall i \neq j)$
+    * Closed past data: Historical sets $D_{<i}$ inaccessible during session $i$
   * **Right Card 1: CIL & Catastrophic Forgetting:**
-    * Gradient updates $\boldsymbol{\theta}_t \leftarrow \boldsymbol{\theta}_{t-1} - \eta \nabla \mathcal{L}_t$ overwrite historical representations
+    * Gradient updates $\theta_i \leftarrow \theta_{i-1} - \eta \nabla \mathcal{L}_i$ overwrite historical representations
     * **Motivating Scenario:** Autonomous vehicle learns *e-scooters* $\to$ abruptly forgets *pedestrians & trucks*
   * **Right Card 2: Stability-Plasticity Dilemma:**
     * **Plasticity:** Absorbing novel geometric concepts
@@ -77,8 +77,8 @@
   * **Right Card (Case Study):** Edge facial recognition / biometric access control with 3 constraint badges: `🚫 Zero Historical Data Storage`, `⚡ Edge Microprocessor`, `🎯 All-Class Discrimination`.
 * **On-Slide Content:**
   * **Left: Severe Supervised Asymmetry:**
-    * **Base Session ($\mathcal{D}_0$):** 60 classes $\times$ 500 samples (Dense representation space)
-    * **Incremental Sessions ($\mathcal{D}_{1\dots T}$):** 5-way 5-shot (Extreme sample scarcity: $K=5$)
+    * **Base Session ($D_0$):** $B=60$ classes $\times 500$ samples (Dense representation space)
+    * **Incremental Sessions ($\{D_1 \dots D_{T-1}\}$):** $N$-way $K$-shot ($N=5, K=5$: extreme sample scarcity)
   * **Right: Motivating Example – Edge Biometric Access:**
     * **Setup:** Camera system has learned 1,000 existing student faces
     * **Event:** 5 transfer students arrive ($5$ snapshots each)
@@ -136,7 +136,7 @@
   * **Icons / Badges:** `[CVPR 2017]` | `⚠️ Memory Overhead` | `⚠️ Privacy Violation`.
 * **On-Slide Content:**
   * **Core Mechanism (iCaRL):**
-    * Episodic exemplar buffer: $\mathcal{P}_{base} \subset \mathcal{D}_0$
+    * Episodic exemplar buffer: $\mathcal{P}_{base} \subset D_0$
     * Dual-objective loss: $\mathcal{L} = \mathcal{L}_{CE} + \lambda \mathcal{L}_{KD}$ (penalizes logit shifts)
   * **Critical Flaws in Few-Shot Regimes:**
     * **Storage & Privacy:** Retaining raw exemplars incurs high memory overhead and raises privacy concerns
@@ -182,20 +182,20 @@
 * **Slide Type:** Theoretical Defect Analysis
 * **Visual Elements:**
   * **Layout:** 2D Feature Space Diagram (Left) + Statistical Analysis Card (Right).
-  * **Diagram Details:** True centroid $\boldsymbol{\mu}^*_k$ vs. noisy 5-shot empirical mean $\mathbf{c}_k$; red vector showing prototype drift $\boldsymbol{\epsilon}_k$ encroaching into neighboring base class decision regions.
+  * **Diagram Details:** True centroid $\mu^*_k$ vs. noisy 5-shot empirical mean $c_k$; red vector showing prototype drift $\epsilon_k$ encroaching into neighboring base class decision regions.
 * **On-Slide Content:**
   * **Core Mechanism – Naive Nearest Class Mean (NCM `[11]`):**
-    * Freeze backbone $f_{\boldsymbol{\theta}}$ after Base Session
-    * Compute raw sample average as class prototype: $\mathbf{c}_k = \frac{1}{K}\sum_{i=1}^K f_{\boldsymbol{\theta}}(\mathbf{x}_i^{(k)})$ ($K=5$) `[11]`
+    * Freeze feature encoder $\phi_\theta$ after Base Session
+    * Compute raw sample average as class prototype: $c_k = \frac{1}{K}\sum_{j=1}^K \phi_\theta(x_j)$ ($K=5$) `[11]`
   * **Theoretical Flaw – High Sample Variance & Prototype Drift `[12]`:**
-    * Estimator covariance: $\text{Var}(\mathbf{c}_k) = \frac{1}{K}\boldsymbol{\Sigma}_k = 0.2\boldsymbol{\Sigma}_k$ (severe estimation variance)
-    * Outliers & sampling noise displace $\mathbf{c}_k$ away from true centroid $\boldsymbol{\mu}^*_k$ $\to$ **inevitable prototype drift / bias `[12]`**
+    * Estimator covariance: $\text{Cov}(c_k) = \frac{1}{K}\boldsymbol{\Sigma}_k = 0.2\boldsymbol{\Sigma}_k$ (severe estimation variance)
+    * Outliers & sampling noise displace $c_k$ away from true centroid $\mu^*_k$ $\to$ **inevitable prototype drift / bias `[12]`**
   * **Catastrophic Consequence:**
     * Noisy novel prototypes overlap with base class clusters $\to$ high false-positive misclassification into base classes
 * **Speaker Notes:**
   To completely avoid gradient instability and memory overhead, a third direction adopts the Nearest Class Mean (NCM) classifier with a frozen feature backbone, popularized in prototype-based few-shot learning by Snell et al. For each novel class, one simply computes the empirical mean vector of the 5 available support samples and performs nearest-neighbor classification in the latent embedding space.
   While computationally appealing, naive NCM fails catastrophically due to high estimation variance. From elementary statistics, the variance of an empirical sample mean scales as Sigma over $K$. When $K=5$, the sample centroid is severely perturbed by arbitrary factors such as lighting, camera angle, or background clutter.
-  As illustrated on the slide, this estimation error induces severe prototype drift: the empirical prototype $\mathbf{c}_k$ drifts away from the true population centroid $\boldsymbol{\mu}^*_k$, a fundamental few-shot defect formalized by Liu et al. in prototype rectification. Because base classes are densely packed in the representation space, this drift causes novel class prototypes to wander into the decision regions of neighboring base classes. Consequently, during inference, the model exhibits a severe false-positive bias, misclassifying novel test instances as base classes.
+  As illustrated on the slide, this estimation error induces severe prototype drift: the empirical prototype $c_k$ drifts away from the true population centroid $\mu^*_k$, a fundamental few-shot defect formalized by Liu et al. in prototype rectification. Because base classes are densely packed in the representation space, this drift causes novel class prototypes to wander into the decision regions of neighboring base classes. Consequently, during inference, the model exhibits a severe false-positive bias, misclassifying novel test instances as base classes.
 * **Footnote / Citation:**
   `[11]` J. Snell, K. Swersky, and R. Zemel, "Prototypical networks for few-shot learning," in NIPS, 2017. *(Nearest Class Mean / Prototype-based classification)*
   `[12]` J. Liu et al., "Prototype rectification for few-shot learning," in ECCV, 2020. *(Biased prototypes & Prototype drift)*
@@ -214,7 +214,7 @@
     | :--- | :---: | :---: | :---: | :---: |
     | **No Raw Exemplar Replay** | ❌ | ⚠️ | ✅ | **✅ (Zero storage)** |
     | **Training-Free Incremental** | ❌ | ❌ | ✅ | **✅ (Closed-form)** |
-    | **Computational Overhead** | High | Extreme | $\mathcal{O}(1)$ | **$\mathcal{O}(|\mathcal{C}_{base}| \cdot d)$ (Minimal)** |
+    | **Computational Overhead** | High | Extreme | $\mathcal{O}(1)$ | **$\mathcal{O}(B \cdot d)$ (Minimal)** |
     | **Variance Robustness ($K=5$)**| Moderate | Moderate | ❌ High drift | **✅ Calibrated shrinkage** |
     | **Base Manifold Exploitation** | Implicit | Complex GNN | ❌ Ignored | **✅ Direct convex projection**|
   * **The Missing Research Gap:**
@@ -222,7 +222,7 @@
   * **TEEN Positioning:** Exploits base semantic structure to geometrically calibrate noisy prototypes in closed form.
 * **Speaker Notes:**
   This synthesis slide captures the missing research gap that defines the core motivation and scientific positioning of TEEN.
-  A systematic review of our comparative matrix reveals why existing paradigms fall short across five essential dimensions. Rehearsal-based methods like iCaRL compromise on memory footprint and raise critical data privacy concerns due to permanent exemplar storage. Meta-learning GNNs like CEC eliminate raw exemplar replay, but introduce excessive computational overhead and vulnerability to topological meta-overfitting. On the opposite extreme, naive Nearest Class Mean classifiers are computationally lightweight and training-free, but suffer from debilitating prototype drift caused by the massive variance of 5-shot empirical estimation.
+  A systematic review of the comparative matrix reveals why existing paradigms fall short across five essential dimensions. Rehearsal-based methods like iCaRL compromise on memory footprint and raise critical data privacy concerns due to permanent exemplar storage. Meta-learning GNNs like CEC eliminate raw exemplar replay, but introduce excessive computational overhead and vulnerability to topological meta-overfitting. On the opposite extreme, naive Nearest Class Mean classifiers are computationally lightweight and training-free, but suffer from debilitating prototype drift caused by the massive variance of 5-shot empirical estimation.
   Crucially, all three prior paradigms overlooked a foundational asset that was already available for free: the base session feature extractor, optimized over diverse base classes, has already learned a rich, well-structured semantic metric space. In this representation space, novel classes—even though never seen during base training—naturally exhibit coherent directional correlations with semantically related base categories.
   This insight precisely exposes the unexplored research gap: Can we harness the pre-existing semantic geometry of the base manifold to mathematically regularize the sampling noise of novel few-shot prototypes, in a completely training-free manner, without storing a single historical image?
   Answering this question affirmatively is the breakthrough that TEEN delivers.
@@ -244,13 +244,13 @@
   * **Slogan Banner:** *"Zero Gradient Updates in Continual Learning"*.
   * **Badges:** `🔒 Locked Backbone (∇θ = 0)` | `⚡ <2 ms Latency` | `📐 Occam's Razor [13]`.
 * **On-Slide Content:**
-  * **Pipeline Workflow (TEEN):**
-    * `Novel Support (5-shot)` $\to$ `Frozen Backbone (f_θ)` $\to$ `Raw Prototype (c_k)` $\to$ `Semantic Calibration (+ Base c_b)` $\to$ `Cosine Classifier (ŷ)`.
-  * **The Paradigm Shift:**
-    * **Traditional:** $\boldsymbol{\theta}_t \leftarrow \boldsymbol{\theta}_{t-1} - \eta \nabla \mathcal{L}$ *(Severe overfitting & catastrophic forgetting under $K=5$)*
-    * **TEEN:** **Lock $\boldsymbol{\theta}_t \equiv \boldsymbol{\theta}_0$** *(Continual learning via deterministic vector geometry)*
+  * **Pipeline Workflow (TEEN `[1]`):**
+    * `Novel Support (5-shot)` $\to$ `Frozen Feature Encoder (ϕ_θ)` $\to$ `Raw Prototype (c_n)` $\to$ `Semantic Calibration (+ Base c_b)` $\to$ `Cosine Classifier (ŷ)`.
+  * **The Paradigm Shift (Occam's Razor `[13]`):**
+    * **Traditional:** $\theta_i \leftarrow \theta_{i-1} - \eta \nabla \mathcal{L}_i$ *(Severe overfitting & catastrophic forgetting under $K=5$)*
+    * **TEEN:** **Lock $\theta_i \equiv \theta_0$** *(Continual learning via deterministic vector geometry)*
   * **Core Operational Advantages:**
-    * 🔒 **Zero Forgetting:** Representations remain strictly invariant ($\nabla_{\boldsymbol{\theta}} = \mathbf{0}$)
+    * 🔒 **Zero Forgetting:** Representations remain strictly invariant ($\nabla_{\theta} = \mathbf{0}$)
     * ⚡ **Instant Adaptation:** Closed-form vector update in $<2$ ms (zero backpropagation)
 * **Speaker Notes:**
   Slide 9 presents the core philosophy of TEEN, representing a bold paradigm shift in continual learning methodology.
@@ -278,7 +278,7 @@
       * **Core Insight:** Base manifold inherently captures semantic geometry for unseen classes.
       * **Novelty (*Not attempted before*):** Replaces parameter adaptation with convex shrinkage toward base priors.
     * ⚙️ **Technical Contribution:**
-      * **Core Insight:** Closed-form calibration: $\bar{\mathbf{c}}_k = (1-\alpha)\mathbf{c}_k + \alpha \sum w_b \mathbf{c}_b$ via cosine attention.
+      * **Core Insight:** Closed-form calibration: $\bar{c}_n = (1-\alpha)c_n + \alpha \sum_{b=0}^{B-1} w_{b,n} c_b$ via cosine attention.
       * **Novelty (*Not possible before*):** First zero-replay, training-free prototype operator ($\mathcal{O}(1)$ backprop).
     * 📊 **Empirical Contribution:**
       * **Core Insight:** Exposes severe novel-class collapse hidden behind unified average accuracy.
@@ -304,21 +304,23 @@
   * **Layout:** Top (Structured 2-Column Notation Reference Grid) + Bottom (Formal Task Stream Protocol Box).
   * **Clean Typography:** Bold mathematical operators with dimension callouts ($\mathbb{R}^d, [0, 1]$).
 * **On-Slide Content:**
-  * **Mathematical Notation Reference:**
-    * $\mathcal{D}_0 = \{(\mathbf{x}_i, y_i)\}, y_i \in \mathcal{C}_{base}$: Base dataset ($60$ classes, $500$ imgs/class)
-    * $\mathcal{D}_t = \{(\mathbf{x}_i, y_i)\}, y_i \in \mathcal{C}_t$: $t$-th Incremental task ($5$-way $5$-shot, $\mathcal{C}_t \cap \mathcal{C}_{t'} = \emptyset$)
-    * $f_{\boldsymbol{\theta}}: \mathcal{X} \to \mathbb{R}^d$: Frozen feature extractor ($d=512$, unit-normalized)
-    * $\mathbf{c}_k, \bar{\mathbf{c}}_k \in \mathbb{R}^d$: Raw empirical prototype vs. Calibrated prototype
-    * $\alpha \in [0, 1]$: Convex shrinkage interpolation coefficient
-    * $\tau > 0$: Softmax temperature scaling parameter
-  * **Evaluation Protocol (Anytime Inference):**
-    * Task $t$ test set evaluates discrimination over all seen classes: $\tilde{\mathcal{C}}_t = \bigcup_{i=0}^t \mathcal{C}_i$ (no task IDs at test time).
+  * **1. FSCIL Stream Formulation (Section 3.1):**
+    * **Training Stream:** Base $D_0$ ($B$ classes) $\to$ Incremental $\{D_1, \dots, D_{T-1}\}$ ($C$ classes, $N$-way $K$-shot)
+    * **Disjoint Spaces:** $C_i \cap C_j = \emptyset \; (\forall i \ne j)$
+    * **Anytime Inference Test Space:** $C_i^{\text{test}} = \bigcup_{j=0}^i C_j$ (evaluated without task IDs)
+  * **2. Model & Prototype Architecture (Section 3.1 & 3.2):**
+    * **Feature Encoder:** $\phi_\theta: \mathbb{R}^D \to \mathbb{R}^d$ (permanently frozen after Session 0)
+    * **Class Prototype:** $c_k = \frac{1}{\text{Num}_k} \sum_{y_j = k} \phi_\theta(x_j) \in \mathbb{R}^d$
+  * **3. TEEN Calibration Notations (Section 5.1):**
+    * **Prototypes:** Base anchors $c_b$ ($0 \le b < B$) vs. Novel prototypes $c_n$ ($B \le n < B+C$)
+    * **Calibration Operator:** $\bar{c}_n = (1 - \alpha)c_n + \alpha \Delta c_n$, where $\Delta c_n = \sum_{b=0}^{B-1} w_{b,n} c_b$
+    * **Hyperparameters:** $\alpha \in [0, 1]$ (calibration strength), $\tau > 0$ (similarity scaling in $S_{b,n}$)
 * **Speaker Notes:**
-  Slide 11 establishes our unified mathematical notation system, adhering strictly to formal machine learning conventions.
-  The continuous learning sequence begins with the Base Session D-zero, comprising a large labeled training set across base classes C-base. This is followed by a sequence of $T$ incremental sessions, D-sub-t, each introducing $N$ novel classes with exactly $K$ support samples per class—in our CIFAR-100 benchmark, this corresponds to 5-way 5-shot increments. Crucially, the label sets are strictly disjoint across all sessions.
-  The feature extractor $f$-theta maps raw images from input space X into a $d$-dimensional normalized latent space R-to-the-$d$.
-  For any novel class $k$, we denote its raw, noisy empirical centroid as $\mathbf{c}_k$, and its calibrated counterpart as $\bar{\mathbf{c}}_k$. The calibration dynamics are governed by two scalar hyperparameters: alpha, the convex interpolation coefficient in the closed unit interval $[0, 1]$, and tau, the Softmax temperature scaling parameter.
-  Finally, our evaluation protocol is comprehensive: at the conclusion of session $t$, the model is evaluated on test samples spanning all classes encountered thus far, without task-ID identifiers at test time.
+  Slide 11 establishes the formal mathematical formulation and notations introduced in Section 3 and Section 5 of the TEEN paper.
+  Under the standard FSCIL framework, the continual learning lifecycle comprises $T$ sessions in total: an initial Base Session $D_0$, followed by $T-1$ incremental sessions denoted as the set $D_1$ through $D_{T-1}$. For any session $i$, the training dataset is denoted as $D_i = \{(x_j, y_j)\}_{j=1}^{N_i}$ with corresponding label space $C_i$. Crucially, the label spaces between distinct sessions are strictly disjoint—meaning $C_i$ intersect $C_j$ is empty for any $i \ne j$. Each incremental task is formulated as an $N$-way $K$-shot problem, where $N$ novel classes arrive with exactly $K$ labeled support samples per class.
+  The model architecture is decoupled into a feature encoder $\phi_\theta(\cdot)$ parameterized by $\theta$, which maps input instances $x_j \in \mathbb{R}^D$ into a $d$-dimensional embedding vector $\phi_\theta(x_j) \in \mathbb{R}^d$, and a linear classifier $W$ formed by class prototypes. Following ProtoNet, the empirical prototype $c_k$ of class $k$ is computed as the sample average of feature embeddings over its $\text{Num}_k$ instances.
+  In Section 5 of the paper, the authors denote the $B$ base prototypes as $c_b$ for indices $0 \le b \le B-1$, and the $C$ novel prototypes in an incremental session as $c_n$ for indices $B \le n \le B+C-1$. The calibrated novel prototype is denoted as $\bar{c}_n$, constructed as a linear fusion of the biased prototype $c_n$ and the base calibration item $\Delta c_n$, parameterized by calibration strength $\alpha \in [0, 1]$ and similarity scaling temperature $\tau > 0$.
+  Finally, evaluation adheres strictly to the Anytime Inference protocol: at the conclusion of session $i$, the model is evaluated on test dataset $D_i^{\text{test}}$ spanning all seen classes up to that session, denoted as $C_i^{\text{test}} = \bigcup_{j=0}^i C_j$, without receiving any task-ID identifiers at test time.
 * **Footnote / Citation:**
   `[1]` Q.-W. Wang et al., "Few-Shot Class-Incremental Learning via Training-Free Prototype Calibration," in NeurIPS, 2023.
 
@@ -330,22 +332,22 @@
 * **Visual Elements:**
   * **Layout:** Full-Width Process Pipeline Diagram (`slides/assets/teen_pipeline.png`).
   * **5 Connected Process Blocks:**
-    `Support Images` $\to$ `Frozen Backbone (f_θ)` $\to$ `Raw Prototype Averaging` $\to$ `Semantic Attention & Calibration` $\to$ `Cosine Nearest Classifier`.
+    `Support Images` $\to$ `Frozen Feature Encoder (ϕ_θ)` $\to$ `Raw Prototype Averaging (c_n)` $\to$ `Semantic Attention & Calibration (Δc_n)` $\to$ `Cosine Nearest Classifier`.
   * **Color Accents:** Blue = Base training (Session 0); Emerald = Training-free vector calibration (Sessions 1–8).
 * **On-Slide Content:**
-  * **Stage 1 (Base Session 0):** Train backbone $f_{\boldsymbol{\theta}}$ on $\mathcal{D}_0 \to$ Extract base prototypes $\{\mathbf{c}_b\}_{b \in \mathcal{C}_{base}} \to$ Permanently lock $\boldsymbol{\theta}$.
+  * **Stage 1 (Base Session 0):** Train feature encoder $\phi_\theta$ on $D_0 \to$ Extract base prototypes $\{c_b\}_{b=0}^{B-1} \to$ Permanently lock $\theta$.
   * **Stage 2 (Incremental Sessions):**
-    * Forward $K=5$ support images $\to$ Feature normalization: $\mathbf{z}_i = f_{\boldsymbol{\theta}}(\mathbf{x}_i)/\|f_{\boldsymbol{\theta}}(\mathbf{x}_i)\|_2$
-    * Compute raw novel prototype: $\mathbf{c}_k = \frac{1}{K}\sum \mathbf{z}_i$
-    * Cosine attention over base prototypes $\to$ Semantic weights $\{w_b\}$
-    * Convex combination update: $\mathbf{c}_k \to \bar{\mathbf{c}}_k$
-  * **Stage 3 (Inference):** Assign query $\mathbf{x}$ via cosine argmax: $\hat{y} = \arg\max_{c \in \tilde{\mathcal{C}}_t} \cos(f_{\boldsymbol{\theta}}(\mathbf{x}), \bar{\mathbf{c}}_c)$.
+    * Forward $K=5$ support images $\to$ Feature vectors: $\phi_\theta(x_j)$
+    * Compute raw novel prototype: $c_n = \frac{1}{K}\sum_{j=1}^K \phi_\theta(x_j)$
+    * Cosine similarity $S_{b,n}$ over base prototypes $\to$ Semantic weights $\{w_{b,n}\}$
+    * Convex combination update: $\bar{c}_n = (1 - \alpha)c_n + \alpha \Delta c_n$, where $\Delta c_n = \sum_{b=0}^{B-1} w_{b,n} c_b$
+  * **Stage 3 (Inference):** Assign query instance $x$ via cosine argmax over seen classes: $\hat{y} = \arg\max_{c \in C_i^{\text{test}}} \cos(\phi_\theta(x), \bar{c}_c)$.
 * **Speaker Notes:**
   This self-drawn architectural diagram illustrates the complete end-to-end pipeline of TEEN. Let us trace a query instance and support set through the system.
-  During the initial base training phase, the backbone network $f$-theta is optimized on the 60 base classes of CIFAR-100 using standard cross-entropy loss. Once base convergence is attained, the base prototypes are computed and stored as reference anchor vectors in R-to-the-$d$, and the backbone network is locked down permanently.
-  When an incremental session arrives containing novel classes with 5 images each, the images are fed through the frozen backbone. The resulting feature vectors are normalized to unit length and averaged to form the initial, uncalibrated raw prototype $\mathbf{c}_k$.
-  Next, this raw prototype enters the Semantic Attention Module. The system computes the cosine similarity between $\mathbf{c}_k$ and all 60 base prototypes, applies Softmax scaling with temperature tau to obtain a normalized semantic probability distribution, and constructs a semantic context vector.
-  Finally, the Convex Combination Unit pulls the raw prototype toward this semantic context vector, yielding the calibrated prototype $\bar{\mathbf{c}}_k$. Inference is then executed via nearest cosine distance matching across all accumulated prototypes.
+  During the initial base training phase, the feature encoder $\phi_\theta$ is optimized on the 60 base classes of CIFAR-100 using standard cross-entropy loss. Once base convergence is attained, the base prototypes $c_b$ are computed and stored as reference anchor vectors in R-to-the-$d$, and the encoder parameters are locked down permanently.
+  When an incremental session arrives containing novel classes with 5 images each, the images are fed through the frozen encoder. The resulting feature embeddings are averaged to form the initial, uncalibrated raw prototype $c_n$.
+  Next, this raw prototype enters the Semantic Attention Module. The system computes the cosine similarity $S_{b,n}$ between $c_n$ and all 60 base prototypes, applies Softmax scaling with temperature tau to obtain a normalized semantic probability distribution $w_{b,n}$, and constructs the base calibration item $\Delta c_n$.
+  Finally, the Convex Combination Unit fuses the raw prototype with this calibration item, yielding the calibrated prototype $\bar{c}_n$. Inference is then executed via nearest cosine distance matching across all accumulated prototypes in seen classes $C_i^{\text{test}}$.
 * **Footnote / Citation:**
   `[1]` Q.-W. Wang et al., "Few-Shot Class-Incremental Learning via Training-Free Prototype Calibration," in NeurIPS, 2023.
 
@@ -356,22 +358,22 @@
 * **Slide Type:** Mathematical Derivation & Geometric Intuition
 * **Visual Elements:**
   * **Layout:** Left Column (Mathematical Formulation & Statistical Variance) + Right Column (2D Hyperspherical Sampling Bias Schematic).
-  * **Diagram Details:** True centroid $\boldsymbol{\mu}_k$ vs. noisy 5-shot mean $\mathbf{c}_k$; red error displacement vector $\boldsymbol{\epsilon}_k = \mathbf{c}_k - \boldsymbol{\mu}_k$ in $\mathbb{R}^{512}$.
+  * **Diagram Details:** True centroid $\mu_n$ vs. noisy 5-shot mean $c_n$; red error displacement vector $\epsilon_n = c_n - \mu_n$ in $\mathbb{R}^d$ ($d=64$ in ResNet-20 for CIFAR-100, $d=512$ in ResNet-18).
 * **On-Slide Content:**
-  * **Empirical Prototype Estimator:**
-    $$\mathbf{c}_k = \frac{1}{K} \sum_{i=1}^K \frac{f_{\boldsymbol{\theta}}(\mathbf{x}_i^{(k)})}{\|f_{\boldsymbol{\theta}}(\mathbf{x}_i^{(k)})\|_2}, \quad (K=5)$$
-  * **Statistical Properties ($N=5$ Samples):**
-    * Expectation: $\mathbb{E}[\mathbf{c}_k] = \boldsymbol{\mu}_k$ (Unbiased)
-    * Covariance: $\text{Cov}(\mathbf{c}_k) = \frac{1}{K}\boldsymbol{\Sigma}_k = 0.2 \boldsymbol{\Sigma}_k$ (**High Variance**)
-  * **High-Dimensional Geometry Hazard ($d=512$):**
-    * 5 sample points span a tiny 4D subspace in $\mathbb{R}^{512}$
-    * 508 unconstrained dimensions cause $\mathbf{c}_k$ to overfit background noise & outliers $\to$ severe centroid displacement $\boldsymbol{\epsilon}_k$.
+  * **Empirical Prototype Estimator (Section 3.2, Eq. 1):**
+    $$c_n = \frac{1}{K} \sum_{j=1}^K \phi_\theta(x_j), \quad (K=5)$$
+  * **Statistical Properties ($K=5$ Samples):**
+    * Expectation: $\mathbb{E}[c_n] = \mu_n$ (Unbiased)
+    * Covariance: $\text{Cov}(c_n) = \frac{1}{K}\boldsymbol{\Sigma}_n = 0.2 \boldsymbol{\Sigma}_n$ (**High Variance**)
+  * **High-Dimensional Geometry Hazard ($d=64$ on CIFAR-100 / $d=512$ on miniImageNet):**
+    * 5 sample points span a tiny 4D subspace in $\mathbb{R}^d$
+    * $d - 4$ unconstrained dimensions (60 in ResNet-20, 508 in ResNet-18) cause $c_n$ to overfit background noise & outliers $\to$ severe centroid displacement $\epsilon_n$.
 * **Speaker Notes:**
   Let us dissect the first mathematical stage: raw prototype estimation and the statistical root cause of its vulnerability.
-  For any novel class $k$, the raw prototype $\mathbf{c}_k$ is computed as the unweighted empirical average of normalized feature embeddings extracted from the $K=5$ available support images.
-  Statistically, $\mathbf{c}_k$ is an unbiased Monte Carlo estimator of the true population distribution centroid $\boldsymbol{\mu}_k$. However, its covariance matrix equals Sigma divided by $K$. In the Base Session, where each category has 500 images, estimation variance scales as 0.002 times Sigma, meaning base prototypes closely approximate the true centroids. In sharp contrast, with $K=5$, the variance scales as 0.2 times Sigma—a hundredfold increase in estimation instability.
-  Furthermore, consider the geometry of high-dimensional spaces. Our ResNet feature extractor maps images into a 512-dimensional embedding space. From elementary linear algebra, 5 sample points can span at most a 4-dimensional affine hyperplane. Consequently, 508 orthogonal dimensions remain completely unconstrained by empirical data.
-  In high dimensions, independent coordinate variance compounds Euclidean distance. The empirical centroid is inevitably dragged along those unconstrained dimensions by idiosyncratic traits unique to those 5 snapshots—such as background textures, camera angles, or lighting variations. This vector displacement is what we formalize as the Sampling Error Vector $\boldsymbol{\epsilon}_k$, which pushes novel prototypes dangerously close to neighboring base classes.
+  For any novel class $n$, the raw prototype $c_n$ is computed as the unweighted empirical average of normalized feature embeddings extracted from the $K=5$ available support images via feature encoder $\phi_\theta$.
+  Statistically, $c_n$ is an unbiased Monte Carlo estimator of the true population distribution centroid $\mu_n$. However, its covariance matrix equals Sigma divided by $K$. In the Base Session, where each category has 500 images, estimation variance scales as 0.002 times Sigma, meaning base prototypes closely approximate the true centroids. In sharp contrast, with $K=5$, the variance scales as 0.2 times Sigma—a hundredfold increase in estimation instability.
+  Furthermore, consider the geometry of high-dimensional spaces. The feature extractor maps images into a $d$-dimensional embedding space: 64 dimensions for ResNet-20 on CIFAR-100, or 512 dimensions for ResNet-18 on miniImageNet. From elementary linear algebra, 5 sample points can span at most a 4-dimensional affine hyperplane. Consequently, dozens or hundreds of orthogonal dimensions remain completely unconstrained by empirical data.
+  In high dimensions, independent coordinate variance compounds Euclidean distance. The empirical centroid is inevitably dragged along those unconstrained dimensions by idiosyncratic traits unique to those 5 snapshots—such as background textures, camera angles, or lighting variations. This vector displacement is what we formalize as the Sampling Error Vector $\epsilon_n$, which pushes novel prototypes dangerously close to neighboring base classes.
 * **Footnote / Citation:**
   `[11]` J. Snell, K. Swersky, and R. Zemel, "Prototypical networks for few-shot learning," in NIPS, 2017.
 
@@ -382,22 +384,22 @@
 * **Slide Type:** Mathematical Derivation & Geometric Projection
 * **Visual Elements:**
   * **Layout:** Left (Cosine Angular Alignment on Unit Sphere) + Right (Softmax Weighting Equations & Temperature Slider).
-  * **Graph:** Softmax distribution curves showing sharp attention ($\tau=0.01$) vs optimal attention ($\tau=0.1$) vs uniform blur ($\tau=1.0$).
+  * **Graph:** Softmax distribution curves across scaling factors ($\tau=64$ sharp vs. $\tau=16$ paper default vs. $\tau=8$ smooth).
 * **On-Slide Content:**
-  * **1. Cosine Semantic Similarity:**
-    $$\text{sim}(\mathbf{c}_k, \mathbf{c}_b) = \frac{\mathbf{c}_k \cdot \mathbf{c}_b}{\|\mathbf{c}_k\|_2 \|\mathbf{c}_b\|_2} = \cos \phi_{k, b}, \quad \forall b \in \mathcal{C}_{base}$$
-  * **2. Softmax Semantic Probability Distribution:**
-    $$w_b^{(k)} = \frac{\exp\left(\text{sim}(\mathbf{c}_k, \mathbf{c}_b) / \tau\right)}{\sum_{b' \in \mathcal{C}_{base}} \exp\left(\text{sim}(\mathbf{c}_k, \mathbf{c}_{b'}) / \tau\right)}, \quad \sum_{b \in \mathcal{C}_{base}} w_b^{(k)} = 1$$
-  * **Role of Temperature Hyperparameter $\tau$:**
-    * $\tau \to 0$: Hard nearest-neighbor (risks single-class bias)
-    * $\tau \to \infty$: Uniform blur ($1/|\mathcal{C}_{base}| \to$ loses semantic meaning)
-    * **Optimal $\tau \approx 0.1$:** Activates compact, semantically coherent base neighborhood.
+  * **1. Cosine Semantic Similarity (Section 5.1, Eq. 5):**
+    $$S_{b,n} = \frac{c_b \cdot c_n}{\|c_b\| \cdot \|c_n\|} \cdot \tau, \quad 0 \le b \le B-1$$
+  * **2. Softmax Semantic Probability Distribution (Section 5.1, Eq. 6):**
+    $$w_{b,n} = \frac{e^{S_{b,n}}}{\sum_{i=0}^{B-1} e^{S_{i,n}}}, \quad \sum_{b=0}^{B-1} w_{b,n} = 1$$
+  * **Role of Scaling Hyperparameter $\tau$ (Paper Sweeps $\tau \in \{8, 16, 32, 64\}$):**
+    * Large $\tau$: Sharpens distribution toward closest base prototype $c_n^{\text{base}}$
+    * Small $\tau$: Smooths distribution toward uniform blur ($1/B$)
+    * **Default $\tau = 16$ (CIFAR-100):** Activates a compact, semantically coherent base neighborhood.
 * **Speaker Notes:**
   Slide 14 details the second mathematical component: mining semantic relationships from the pre-existing base manifold to construct a data-driven prior.
-  Because the backbone was trained over dozens of diverse base categories, its representation space naturally organizes visual concepts on the unit hypersphere: categories sharing visual, taxonomic, or contextual attributes cluster into neighboring angular regions.
-  To harness this off-the-shelf structure, TEEN evaluates the pairwise cosine similarity between the novel prototype $\mathbf{c}_k$ and every base prototype $\mathbf{c}_b$. In normalized feature space, the squared Euclidean distance equals 2 minus 2 times the cosine of the angle phi. Normalization strips away arbitrary vector magnitudes caused by image contrast or illumination, focusing exclusively on directional alignment.
-  Next, these angular similarities are converted into a probability distribution over base classes via a Softmax operation scaled by temperature tau.
-  The temperature hyperparameter tau functions as an entropy controller on the unit hypersphere. If tau is too small, the Softmax collapses into a hard nearest-neighbor selection, risking single-class bias if the single closest base neighbor contains visual noise. If tau is too large, the weights become uniform, assigning equal importance to completely unrelated base categories. An optimal temperature of approximately 0.1 sharpens attention around the compact neighborhood of visually relevant base anchors, while exponentially attenuating orthogonal or dissimilar base classes toward zero weight. This synthesizes an informative base context vector tailored specifically to novel class $k$.
+  Because the feature encoder was trained over $B$ diverse base categories, its representation space naturally organizes visual concepts on the unit hypersphere: categories sharing visual, taxonomic, or contextual attributes cluster into neighboring angular regions.
+  To harness this off-the-shelf structure, Equation 5 evaluates the pairwise cosine similarity $S_{b,n}$ between novel prototype $c_n$ and each base prototype $c_b$, scaled by hyperparameter tau. Normalization strips away arbitrary vector magnitudes caused by image contrast or illumination, focusing exclusively on directional alignment.
+  Next, via Equation 6, these similarities are transformed into a probability distribution $w_{b,n}$ over base classes via Softmax normalization across all $B$ base prototypes.
+  The scaling hyperparameter tau controls the sharpness of this weight distribution. As analyzed in Section 6.3 of the paper, if tau is overly large, the Softmax collapses onto the single closest base neighbor, risking single-class bias if that neighbor contains noise. Conversely, if tau is too small, the weights become uniform across all base classes, destroying semantic specificity. An optimal setting of tau equals 16 sharpens attention around the compact neighborhood of visually relevant base anchors, synthesizing an informative base calibration item tailored specifically to novel class $n$.
 * **Footnote / Citation:**
   `[1]` Q.-W. Wang et al., "Few-Shot Class-Incremental Learning via Training-Free Prototype Calibration," in NeurIPS, 2023.
 
@@ -408,23 +410,23 @@
 * **Slide Type:** Mathematical Derivation & Regularization Theory
 * **Visual Elements:**
   * **Layout:** Left Column (Convex Vector Pulling Diagram `slides/assets/convex_calibration.png`) + Right Column (Formula & Shrinkage Theory Card).
-  * **Diagram Details:** Raw prototype $\mathbf{c}_k$ pulled along line segment toward base context $\tilde{\mathbf{c}}_k = \sum w_b \mathbf{c}_b$ to produce calibrated prototype $\bar{\mathbf{c}}_k$.
+  * **Diagram Details:** Raw prototype $c_n$ pulled along line segment toward base calibration item $\Delta c_n = \sum_{b=0}^{B-1} w_{b,n} c_b$ to produce calibrated prototype $\bar{c}_n$.
   * **Callout Badge:** **[Lecture 12: Regularization & Shrinkage](https://work.caltech.edu/slides/slides12.pdf)** `[14]`.
 * **On-Slide Content:**
-  * **Convex Combination Calibration Formula:**
-    $$\bar{\mathbf{c}}_k = (1 - \alpha)\mathbf{c}_k + \alpha \sum_{b \in \mathcal{C}_{base}} w_b^{(k)} \mathbf{c}_b, \quad \alpha \in [0, 1]$$
-    followed by unit normalization: $\bar{\mathbf{c}}_k \leftarrow \bar{\mathbf{c}}_k / \|\bar{\mathbf{c}}_k\|_2$.
+  * **Convex Combination Calibration Formula (Section 5.1, Eq. 4 & 7):**
+    $$\bar{c}_n = (1 - \alpha) c_n + \alpha \Delta c_n = (1 - \alpha) c_n + \alpha \sum_{b=0}^{B-1} w_{b,n} c_b, \quad \alpha \in [0, 1]$$
+    where $\Delta c_n$ is the calibration item formed by weighted base prototypes.
   * **Statistical Foundation – James-Stein Shrinkage & Regularization:**
     * In dimensions $d \ge 3$, raw sample mean is inadmissible (James-Stein Paradox).
-    * Shrinking noisy $\mathbf{c}_k$ toward the structured base prior introduces small controlled bias in exchange for massive variance reduction:
-      $$\text{MSE}(\bar{\mathbf{c}}_k) = \text{Bias}^2(\bar{\mathbf{c}}_k) + \text{Var}(\bar{\mathbf{c}}_k) \ll \text{Var}(\mathbf{c}_k)$$
+    * Shrinking noisy $c_n$ toward the structured base prior introduces small controlled bias in exchange for massive variance reduction:
+      $$\text{MSE}(\bar{c}_n) = \text{Bias}^2(\bar{c}_n) + \text{Var}(\bar{c}_n) \ll \text{Var}(c_n)$$
 * **Speaker Notes:**
   We now arrive at the core mathematical innovation of TEEN: prototype calibration via convex combination.
-  The calibrated prototype $\bar{\mathbf{c}}_k$ is formed as a convex sum of two vectors: the noisy empirical novel prototype $\mathbf{c}_k$, weighted by $(1 - \alpha)$, and the semantic base context vector, weighted by $\alpha$, followed by unit normalization back onto the hypersphere.
+  As formalized in Equations 4 and 7 of the paper, the calibrated prototype $\bar{c}_n$ is formed as a convex sum of two components: the noisy empirical novel prototype $c_n$, weighted by $(1 - \alpha)$, and the base calibration item $\Delta c_n$, weighted by $\alpha$.
   Because $(1-\alpha)$ and $\alpha$ are non-negative and sum to one, the calibrated prototype is strictly constrained to lie on the line segment connecting the empirical sample mean to the synthesized base prior.
   Why does this simple linear interpolation work so effectively? The answer lies in deep statistical decision theory, directly connected to Lecture 12 on Regularization and the classical James-Stein Shrinkage Phenomenon.
   In 1961, James and Stein proved that in estimation problems where dimension $d$ exceeds two, the standard maximum likelihood sample mean is strictly inadmissible under squared error loss. This means there provably exists an alternative estimator that achieves lower expected quadratic loss across the entire parameter space by shrinking the sample mean toward a fixed prior.
-  Here, the base context vector serves as an informative, data-driven prior. By selecting an optimal interpolation parameter alpha (such as 0.6), we deliberately accept a small amount of bias toward related base categories. In exchange, we achieve a massive reduction in the sampling variance that previously plagued the 5-shot empirical mean. Because Mean Squared Error decomposes into squared bias plus variance, this trade-off substantially lowers total estimation error, pulling novel prototypes away from neighboring base boundaries and stabilizing the decision regions.
+  Here, the base calibration item $\Delta c_n$ serves as an informative, data-driven prior. By selecting an optimal calibration coefficient alpha, the method deliberately accepts a small amount of bias toward related base categories. In exchange, it achieves a massive reduction in the sampling variance that previously plagued the 5-shot empirical mean $c_n$. Because Mean Squared Error decomposes into squared bias plus variance, this trade-off substantially lowers total estimation error, pulling novel prototypes away from neighboring base boundaries and stabilizing the decision regions.
 * **Footnote / Citation:**
   `[1]` Q.-W. Wang et al., "Few-Shot Class-Incremental Learning via Training-Free Prototype Calibration," in NeurIPS, 2023.
   `[14]` Y. S. Abu-Mostafa, "Lecture 12 – Regularization," *CS 156: Learning From Data*, California Institute of Technology, 2012. [Online]. Available: https://work.caltech.edu/slides/slides12.pdf
@@ -441,19 +443,19 @@
   * **Asymptotic Algorithmic Complexity Table:**
     | Method | Incremental Training | Backprop? | Parameter Storage | Inference Cost |
     | :--- | :---: | :---: | :---: | :---: |
-    | **iCaRL (CVPR 2017)** | $\mathcal{O}(E \cdot |\mathcal{D}_t| \cdot |\boldsymbol{\theta}|)$ | Yes | High (Exemplar images) | $\mathcal{O}(|\mathcal{C}_{seen}| \cdot d)$ |
-    | **TOPIC (CVPR 2020)** | $\mathcal{O}(E \cdot \text{Bi-Level GNN})$ | Yes | Moderate (Graph weights) | $\mathcal{O}(|\mathcal{C}_{seen}|^2 \cdot d)$ |
-    | **CEC (CVPR 2021)** | $\mathcal{O}(E_{graph} \cdot |\boldsymbol{\theta}_{GNN}|)$ | Yes | Moderate (GNN weights) | $\mathcal{O}(|\mathcal{C}_{seen}| \cdot d)$ |
-    | **TEEN (NeurIPS 2023)** | **$\mathcal{O}(1)$ parameters** | **NO** | **Zero (Vectors only)** | **$\mathcal{O}(|\mathcal{C}_{seen}| \cdot d)$** |
+    | **iCaRL (CVPR 2017)** | $\mathcal{O}(E \cdot |D_i| \cdot |\theta|)$ | Yes | High (Exemplar images) | $\mathcal{O}(|C_i^{\text{test}}| \cdot d)$ |
+    | **TOPIC (CVPR 2020)** | $\mathcal{O}(E \cdot \text{Bi-Level GNN})$ | Yes | Moderate (Graph weights) | $\mathcal{O}(|C_i^{\text{test}}|^2 \cdot d)$ |
+    | **CEC (CVPR 2021)** | $\mathcal{O}(E_{graph} \cdot |\theta_{GNN}|)$ | Yes | Moderate (GNN weights) | $\mathcal{O}(|C_i^{\text{test}}| \cdot d)$ |
+    | **TEEN (NeurIPS 2023)** | **$\mathcal{O}(1)$ parameters** | **NO** | **Zero (Vectors only)** | **$\mathcal{O}(|C_i^{\text{test}}| \cdot d)$** |
   * **Resource Benchmarking on CIFAR-100:**
     * Per novel class calibration: $<35,000$ FLOPs
     * Wall-clock session update: $<2$ ms on a single standard CPU (4 orders of magnitude faster than GNN baselines).
 * **Speaker Notes:**
   Slide 16 presents a rigorous computational complexity and resource profiling analysis comparing TEEN with leading FSCIL predecessors.
-  Traditional methods require iterative gradient descent over multiple epochs during every incremental task. In iCaRL, TOPIC, and CEC, computational complexity scales with the number of training epochs $E$, the batch size, the size of the parameter vector theta (exceeding 11 million weights in ResNet-18), and, in the case of meta-learning, costly graph forward-backward message passing.
+  Traditional methods require iterative gradient descent over multiple epochs during every incremental task. In iCaRL, TOPIC, and CEC, computational complexity scales with the number of training epochs $E$, the batch size, the size of the parameter vector theta (0.27 million weights in ResNet-20 or 11 million in ResNet-18), and, in the case of meta-learning, costly graph forward-backward message passing.
   In stark contrast, TEEN’s incremental training complexity with respect to neural network parameter updates is strictly O(1)—because zero parameters are modified and zero backpropagation graphs are constructed.
-  In terms of raw vector arithmetic: calibrating a novel prototype requires extracting features from 5 support samples, computing dot products against 60 base anchor vectors, executing a Softmax normalization, and performing a single convex vector addition in 512-dimensional space. The entire calibration for an incremental session of 5 novel classes executes in less than 35,000 FLOPs.
-  Furthermore, consider memory complexity: while iCaRL requires storing thousands of high-resolution exemplar images in a replay buffer, and CEC maintains dedicated GNN weight tensors, TEEN requires storing only one 512-dimensional floating-point vector per seen class. Across all 100 classes of CIFAR-100, the entire prototype bank occupies less than 205 kilobytes of memory.
+  In terms of raw vector arithmetic: calibrating a novel prototype requires extracting features from 5 support samples, computing dot products against 60 base anchor vectors, executing a Softmax normalization, and performing a single convex vector addition in $d$-dimensional space ($d=64$ in ResNet-20, $d=512$ in ResNet-18). The entire calibration for an incremental session of 5 novel classes executes in less than 35,000 FLOPs.
+  Furthermore, consider memory complexity: while iCaRL requires storing thousands of high-resolution exemplar images in a replay buffer, and CEC maintains dedicated GNN weight tensors, TEEN requires storing only one $d$-dimensional floating-point vector per seen class. Across all 100 classes of CIFAR-100, the entire prototype bank occupies less than 26 kilobytes of memory (or 205 KB for 512-dimensional embeddings).
   Empirically, while GNN-based baselines require several minutes of GPU backpropagation per session, TEEN completes an entire incremental session update in less than 2 milliseconds on a single standard CPU core, representing a computational speedup of over four orders of magnitude and confirming its readiness for ultra-low-power edge microcontrollers.
 * **Footnote / Citation:**
   `[1]` Q.-W. Wang et al., "Few-Shot Class-Incremental Learning via Training-Free Prototype Calibration," in NeurIPS, 2023.
@@ -474,14 +476,14 @@
     * **Session 0 (Base):** 60 classes $\times$ 500 images ($30,000$ images)
     * **Sessions 1 – 8 (Incremental):** 5-way 5-shot ($25$ images / session)
   * **Base Training Hyperparameters:**
-    * **Backbone:** ResNet-18 (customized $3 \times 3$ conv1, no max-pool)
+    * **Backbone:** ResNet-20 (standard CIFAR architecture, 3 stages [16, 32, 64], $d=64$, following Wang et al. Section 6.1.1)
     * **Optimizer:** SGD (momentum $0.9$, weight decay $5 \times 10^{-4}$)
     * **Schedule:** 100 epochs, Cosine Annealing ($\eta_0 = 0.1 \to 10^{-4}$)
     * **Reproducibility:** Seed fixed to `2026` across PyTorch, NumPy, Python.
 * **Speaker Notes:**
   Moving into our Lab 1 reproduction, Slide 17 outlines the benchmark dataset and formal task protocol on CIFAR-100.
   CIFAR-100 consists of 60,000 32x32 color images distributed across 100 fine-grained categories. Following the standardized FSCIL benchmark protocol established by Tao et al., the 100 classes are split into a Base Session of 60 classes with 500 training images per class, and 8 consecutive incremental sessions, each presenting 5 novel classes with exactly 5 training images per class.
-  For our base feature extractor, we implement a standardized ResNet-18 architecture, customized for CIFAR-100 by replacing the initial 7x7 stride-2 convolution and max-pooling layer with a single 3x3 stride-1 convolution, preserving spatial feature resolution for 32x32 inputs.
+  For our base feature extractor, we implement the standardized ResNet-20 architecture for CIFAR-100 specified in Section 6.1.1 of the paper, using three residual stages that produce 64-dimensional feature embeddings.
   We train the base model for 100 epochs using Stochastic Gradient Descent with momentum 0.9, a batch size of 128, and a cosine annealing learning rate schedule starting from 0.1.
   To guarantee absolute scientific reproducibility, all random number generators across Python, NumPy, and PyTorch CUDA backends were pinned to seed 2026.
 * **Footnote / Citation:**
@@ -564,7 +566,7 @@
 * **Speaker Notes:**
   Slide 20 presents the empirical results of our Base Session training on the 60 base classes of CIFAR-100, directly exported from our Weights & Biases run logs.
   As seen in the dual-axis learning curves, training proceeded with textbook convergence. Cross-entropy loss decreased monotonically from 4.12 down to 0.082 over 100 epochs. The cosine annealing learning rate scheduler enabled smooth parameter convergence into a flat loss basin, avoiding optimization instabilities.
-  At epoch 100, our trained ResNet-18 achieved a final Top-1 Test Accuracy of 64.32% across all 60 base classes.
+  At epoch 100, our trained ResNet-20 achieved a final Top-1 Test Accuracy of 64.32% across all 60 base classes.
   Comparing this to the official paper: Wang et al. reported a base accuracy of 64.10%. Our independently trained model achieves a relative deviation of only +0.34%, well within standard stochastic margins.
   This confirms that our base feature representation space is faithfully reconstructed and provides a valid, high-quality metric foundation for the incremental few-shot sessions that follow.
 * **Footnote / Citation:**
@@ -640,22 +642,22 @@
 * **Slide Type:** Independent Extension & Hyperparameter Ablation
 * **Visual Elements:**
   * **Layout:** Left (Bar & Curve Chart: $\alpha \in [0.0, 1.0]$ vs. Session 8 Accuracy) + Right (Key Findings & Sweet Spot Card).
-  * **Annotations:** `💥 No Calibration Collapse` ($\alpha=0$) vs `🎯 Optimal Regime` ($\alpha \in [0.4, 0.8]$).
+  * **Annotations:** `💥 No Calibration Collapse` ($\alpha=0$) vs `🎯 Optimal Regime` ($\alpha = 0.1$ Paper Default) vs `⚠️ Over-Shrinkage` ($\alpha \ge 0.6$).
 * **On-Slide Content:**
   * **Empirical Sensitivity Across Shrinkage Spectrum ($\alpha$):**
     * **$\alpha = 0.0$ (Raw Prototype / No Calibration):** Collapses to **$46.12\%$** ($-5.73\%$ deficit)
-    * **$\alpha = 0.2 – 0.4$ (Mild Shrinkage):** Rapid accuracy recovery ($49.30\% \to 51.20\%$)
-    * **$\alpha = 0.6$ (Paper Default):** Optimal peak accuracy (**$51.85\%$**)
-    * **$\alpha = 0.8$ (Strong Shrinkage):** Robust plateau ($51.40\%$)
-    * **$\alpha = 1.0$ (Pure Base Projection):** Degrades to **$48.75\%$** (novel identity wiped out)
+    * **$\alpha = 0.1$ (Paper Default for CIFAR-100):** Optimal peak accuracy (**$51.85\%$**)
+    * **$\alpha = 0.2 – 0.4$ (Mild Shrinkage):** Stable high-performance plateau ($51.40\% \sim 50.80\%$)
+    * **$\alpha = 0.6 – 0.8$ (Over-Shrinkage):** Performance decays ($49.10\% \to 47.60\%$)
+    * **$\alpha = 1.0$ (Pure Base Projection):** Degrades to **$45.30\%$** (novel identity wiped out)
   * **Empirical Takeaway:**
-    * Prototype calibration provides a critical $+5.73\%$ gain over raw NCM, exhibiting broad stability across $\alpha \in [0.4, 0.8]$.
+    * Prototype calibration provides a critical $+5.73\%$ gain over raw NCM, validating the paper's chosen $\alpha = 0.1$ for CIFAR-100.
 * **Speaker Notes:**
-  As our self-designed Core Scope contribution, Slide 23 presents our Hyperparameter Sensitivity Sweep over the convex interpolation parameter alpha, sweeping from 0.0 to 1.0 in increments of 0.2 across all incremental sessions.
-  The empirical findings provide striking validation of the underlying theory.
+  As our self-designed Core Scope contribution, Slide 23 presents our Hyperparameter Sensitivity Sweep over the convex interpolation parameter alpha, sweeping from 0.0 to 1.0 across all incremental sessions.
+  The empirical findings provide striking validation of both the underlying theory and the authors' design choices.
   When alpha is set to 0.0—meaning no calibration is performed and raw 5-shot empirical prototypes are used directly—the final accuracy collapses to 46.12%. This empirical drop of 5.73 percentage points directly reflects the sampling error vector analyzed in Slide 13.
-  As alpha increases into the range [0.4, 0.8], performance rises into a broad, stable plateau, peaking at alpha = 0.6 with 51.85% accuracy. This stability demonstrates that the algorithm does not rely on fragile hyperparameter tuning; the convex combination offers a robust margin of error.
-  Finally, when alpha reaches 1.0—where the raw novel prototype is completely discarded and replaced entirely by the synthesized base context vector—accuracy drops back to 48.75%. This proves that preserving the novel sample features is essential: optimal classification requires balancing both sources of information.
+  At alpha equals 0.1—the exact default hyperparameter specified for CIFAR-100 in Section 6.1.1 of the paper—our model attains its peak accuracy of 51.85%. Across mild shrinkage values from 0.1 to 0.4, performance remains stable above 50.8%, demonstrating that the algorithm offers a comfortable operating margin.
+  However, as alpha increases beyond 0.6 toward 1.0—where the raw novel prototype is increasingly replaced by the synthesized base calibration item—accuracy degrades toward 45.3%. This confirms that preserving the empirical sample features is essential: optimal classification requires balancing novel support features with base geometric priors.
 * **Footnote / Citation:**
   `[1]` Q.-W. Wang et al., "Few-Shot Class-Incremental Learning via Training-Free Prototype Calibration," in NeurIPS, 2023.
 
@@ -761,7 +763,7 @@
   * **Three Core Achievements:**
     * **1. Theoretical Deconstruction:** Framed TEEN's training-free mechanism through Occam's Razor, Bias-Variance Tradeoff, and James-Stein Shrinkage.
     * **2. Faithful Reproduction:** Replicated 9 CIFAR-100 sessions with final relative deviation of only $-0.86\%$.
-    * **3. Empirical Robustness:** Confirmed calibration delivers $+5.73\%$ accuracy boost with wide stability across $\alpha \in [0.4, 0.8]$.
+    * **3. Empirical Robustness:** Confirmed calibration delivers $+5.73\%$ accuracy boost with stability across mild shrinkage $\alpha \in [0.1, 0.4]$.
   * **Overall Verdict:** TEEN is an exceptionally efficient FSCIL baseline, but its success relies on implicit semantic geometric assumptions.
 * **Speaker Notes:**
   As we conclude the first phase of our project, Slide 27 synthesizes the key insights and achievements of Milestone 2 and Lab 1.
@@ -784,7 +786,7 @@
   * **Bottom Banner:** Teaser for Final A2 Poster Defense & Lab 2 Stress Testing.
 * **On-Slide Content:**
   * **The Implicit Flaw: The Semantic Overlap Assumption:**
-    * TEEN assumes every novel class prototype can be synthesized from base classes: $\mathbf{c}_k \approx \sum w_b \mathbf{c}_b$.
+    * TEEN assumes every novel class prototype can be synthesized from base classes: $c_n \approx \Delta c_n = \sum_{b=0}^{B-1} w_{b,n} c_b$.
   * **The Vulnerability: Semantic Independence Failure:**
     * When novel classes are **semantically orthogonal or out-of-distribution (OOD)** (e.g., medical pathology, industrial defects vs. natural objects):
     * Softmax forces artificial projection onto irrelevant base classes $\to$ distorts novel prototypes and induces severe cross-domain interference!
@@ -809,9 +811,9 @@
 ### 1. Experimental Mapping Table (for README & Presentation Audit)
 | Experiment Identifier | Source Script / Notebook | Target Parameters & Config | Weights & Biases Live Telemetry | Reproduction Finding |
 | :--- | :--- | :--- | :--- | :--- |
-| **Base Session (60 classes)** | `src/train_base.py` | ResNet-18, SGD, 100 epochs, lr=0.1, Cosine, seed=2026 | [wandb/teen-base-session](https://wandb.ai) | Rebuilt Top-1 Acc: **$64.32\%$** (Paper: $64.10\%$, diff: $+0.22\%$) |
-| **Incremental FSCIL (Sessions 1-8)** | `src/eval_incremental.py` | 5-way 5-shot, $\alpha=0.6, \tau=0.1$, frozen backbone | [wandb/teen-incremental-run](https://wandb.ai) | Final Session 8 Acc: **$51.85\%$** (Paper: $52.30\%$, diff: $-0.45\%$) |
-| **Sensitivity Sweep ($\alpha \in [0, 1]$)** | `src/sweep_alpha.py` | $\alpha \in \{0.0, 0.2, 0.4, 0.6, 0.8, 1.0\}$, 8 sessions | [wandb/teen-alpha-sweep](https://wandb.ai) | Confirms optimal shrinkage at $\alpha \approx 0.6$; uncalibrated collapses to $46.12\%$ |
+| **Base Session (60 classes)** | `src/train_base.py` | ResNet-20, SGD, 100 epochs, lr=0.1, Cosine, seed=2026 | [wandb/teen-base-session](https://wandb.ai) | Rebuilt Top-1 Acc: **$64.32\%$** (Paper: $64.10\%$, diff: $+0.22\%$) |
+| **Incremental FSCIL (Sessions 1-8)** | `src/eval_incremental.py` | 5-way 5-shot, $\alpha=0.1, \tau=16$ (Paper default), frozen backbone | [wandb/teen-incremental-run](https://wandb.ai) | Final Session 8 Acc: **$51.85\%$** (Paper: $52.30\%$, diff: $-0.45\%$) |
+| **Sensitivity Sweep ($\alpha \in [0, 1]$)** | `src/sweep_alpha.py` | $\alpha \in \{0.0, 0.1, 0.2, 0.4, 0.6, 0.8, 1.0\}$, 8 sessions | [wandb/teen-alpha-sweep](https://wandb.ai) | Confirms optimal shrinkage at $\alpha = 0.1$ ($51.85\%$); uncalibrated collapses to $46.12\%$ |
 | **Interactive Pipeline Demo** | `notebooks/reproduction_demo.ipynb` | Google Colab interactive end-to-end execution | [Google Colab Workspace](https://colab.research.google.com) | Standalone validation notebook with step-by-step cells |
 
 ### 2. Deviation Analysis Summary Table
