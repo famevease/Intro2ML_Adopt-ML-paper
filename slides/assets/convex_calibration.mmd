@@ -1,0 +1,51 @@
+---
+config:
+  layout: elk
+  themeVariables:
+    fontSize: 22px
+---
+flowchart LR
+ subgraph BASE_PRIOR["1. Base Manifold Prior (Low Variance)"]
+        DELTA["Calibration Item (Semantic Anchor)<br>Δc_n = ∑ w_b,n c_b"]
+        B_SET[("Base Prototypes Bank<br>{c_b} (b = 0..B-1)")]
+  end
+ subgraph NOVEL_SAMPLE["2. Empirical Few-Shot Estimation (High Variance)"]
+        CN["Raw Novel Prototype<br>c_n = 1/K ∑ ϕ_θ(x_j)<br>⚠️ High Sampling Error ε_n"]
+        SAMPLES["5-Shot Support Samples<br>x_j ∈ D_i (K=5)"]
+  end
+ subgraph CONVEX_OPERATOR["3. Convex Combination & Shrinkage Line Segment"]
+    direction TB
+        CALIB_NODE{{"Convex Interpolation Operator<br>c̄_n = (1 - α)c_n + α Δc_n"}}
+        RESULT["Calibrated Novel Prototype<br>c̄_n (Normalized on Unit-Sphere)<br>🎯 Optimal Bias-Variance Tradeoff"]
+  end
+ subgraph THEORETICAL_FOUNDATION["Statistical Foundation (Lecture 12: Regularization)"]
+    direction LR
+        ALPHA1["α = 1.0<br>Pure Base Projection<br>⚠️ Severe Bias (Novel Identity Wiped)"]
+        ALPHA_OPT["α = 0.1 (Paper Default)<br>James-Stein Shrinkage<br>✅ Optimal Bias-Variance Balance"]
+        ALPHA0["α = 0.0<br>No Calibration<br>❌ Variance Collapse (High Sampling Error)"]
+  end
+    B_SET -- Softmax Attention w_b,n --> DELTA
+    SAMPLES -- Feature Encoder ϕ_θ --> CN
+    CN == "Weight: 1 - α" ==> CALIB_NODE
+    DELTA == Weight: α ==> CALIB_NODE
+    CALIB_NODE --> RESULT
+    ALPHA0 -- Shrinkage Vector Pulling --> ALPHA_OPT
+    ALPHA_OPT -- "Over-Shrinkage" --> ALPHA1
+    RESULT -. "MSE = Bias² + Var ≪ Var(c_n)" .-> THEORETICAL_FOUNDATION
+
+     B_SET:::base
+     DELTA:::base
+     SAMPLES:::noisy
+     CN:::noisy
+     CALIB_NODE:::core
+     RESULT:::core
+     ALPHA0:::noisy
+     ALPHA_OPT:::core
+     ALPHA1:::alert
+     THEORETICAL_FOUNDATION:::theory
+    classDef default fill:#F8FAFC,stroke:#64748B,stroke-width:1.5px,color:#0F172A
+    classDef base fill:#EFF6FF,stroke:#3B82F6,stroke-width:1.5px,color:#1E3A8A
+    classDef noisy fill:#FEF2F2,stroke:#EF4444,stroke-width:1.5px,stroke-dasharray: 4 4,color:#991B1B
+    classDef core fill:#ECFDF5,stroke:#10B981,stroke-width:2px,color:#064E3B
+    classDef theory fill:#FDF4FF,stroke:#A855F7,stroke-width:1.5px,color:#581C87
+    classDef alert fill:#FFFBEB,stroke:#F59E0B,stroke-width:1.5px,color:#78350F
