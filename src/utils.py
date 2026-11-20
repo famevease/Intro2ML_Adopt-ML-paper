@@ -41,7 +41,7 @@ def compute_fscil_metrics(
         preds (torch.Tensor): Nhãn dự đoán của mô hình, shape (N,).
         targets (torch.Tensor): Nhãn thực tế của tập kiểm thử, shape (N,).
         num_base_classes (int): Số lượng lớp cơ sở ở Session 0. Mặc định là 60.
-        session0_acc (float | None): Độ chính xác Top-1 ở Session 0 (%) để tính PD.
+        session0_acc (Optional[float]): Độ chính xác Top-1 ở Session 0 (%) để tính PD.
 
     Returns:
         dict[str, float]: Từ điển chứa avg_acc, base_acc, new_acc, hmean và pd (%).
