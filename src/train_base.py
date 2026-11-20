@@ -46,7 +46,7 @@ def train_base_session(args: argparse.Namespace) -> None:
     Cài đặt theo Section 6.1.1 & Appendix C.1 của bài báo TEEN (NeurIPS 2023):
     - Optimizer SGD (lr=0.1, momentum=0.9, weight_decay=5e-4) + CosineAnnealingLR.
     - Hàm mất mát Cross-Entropy trên logits đã nhân nhiệt độ tau=16.0.
-    - Lưu checkpoint tốt nhất sang Google Drive và ghi log real-time lên W&B.
+    - Lưu checkpoint tốt nhất sang Google Drive và ghi log lên W&B Team chung.
 
     Args:
         args (argparse.Namespace): Các tham số dòng lệnh cấu hình thực nghiệm.
@@ -103,7 +103,6 @@ def train_base_session(args: argparse.Namespace) -> None:
         for images, labels in train_loader:
             images, labels = images.to(device), labels.to(device)
 
-            # 4 bước chuẩn của vòng lặp huấn luyện PyTorch
             optimizer.zero_grad()
             logits = model(images, active_classes=60)
             loss = criterion(logits, labels)
@@ -157,8 +156,7 @@ if __name__ == "__main__":
     parser.add_argument("--lr", type=float, default=0.1)
     parser.add_argument("--tau", type=float, default=16.0)
     parser.add_argument("--seed", type=int, default=2026)
-    parser.add_argument("--wandb_entity", type=str, default=None)
+    parser.add_argument("--wandb_entity", type=str, default="tghien-org")
     parser.add_argument("--wandb_project", type=str, default="Intro2ML-Group05")
     args = parser.parse_args()
     train_base_session(args)
-    
