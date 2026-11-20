@@ -230,7 +230,7 @@ Lộ trình 21 ngày được chia thành 3 giai đoạn nhịp nhàng, tối ư
   - [x] *Long:* Viết file `src/dataset.py` để tự động tải và chia CIFAR-100 thành 60 lớp base và 8 incremental tasks (5-way 5-shot). Chạy thử repo tác giả để lấy số liệu đối chiếu ban đầu.
 * **Ngày 04/11 (Thứ 4): Sơ đồ đầu tiên & Backbone Model**
   - [x] *Hiên:* Tự vẽ sơ đồ 1: Bài toán FSCIL & Hiện tượng Catastrophic Forgetting (vẽ trực tiếp trong slide PowerPoint).
-  - [ ] *Long:* Viết `src/models.py` dựng mạng ResNet-18/20 chuẩn cho CIFAR-100.
+  - [x] *Long:* Viết `src/models.py` dựng mạng ResNet-18/20 chuẩn cho CIFAR-100.
 * **Ngày 05/11 (Thứ 5): Soạn Tiền nhiệm & Script Train Base**
   - [x] *Hiên:* Soạn Slide 5 – 8 (Phân tích hạn chế của tiền nhiệm) kèm Speaker Notes chi tiết.
   - [ ] *Long:* Viết script huấn luyện Base session `src/train_base.py`, tích hợp ghi log loss và accuracy thời gian thực lên W&B.
