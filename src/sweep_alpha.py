@@ -65,6 +65,8 @@ def run_hyperparameter_sweep(args: argparse.Namespace) -> None:
         num_classes=60,
         device=device,
     )
+    # Thay thế 60 trọng số SGD bằng 60 Base Prototypes (Section 3.2: W = [c_1, ..., c_N])
+    model.fc.weight.data[:60] = base_prototypes
 
     # Tính trước raw prototypes cho các lớp mới (Session 1..8) vì backbone cố định
     session_raw_new_protos: dict[int, torch.Tensor] = {}

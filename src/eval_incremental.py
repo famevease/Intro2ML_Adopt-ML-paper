@@ -111,6 +111,8 @@ def evaluate_incremental_fscil(args: argparse.Namespace) -> None:
         num_classes=60,
         device=device,
     )
+    # Thay thế 60 trọng số SGD bằng 60 Base Prototypes (Section 3.2: W = [c_1, ..., c_N])
+    model.fc.weight.data[:60] = base_prototypes
 
     print("\n" + "=" * 86)
     print(
