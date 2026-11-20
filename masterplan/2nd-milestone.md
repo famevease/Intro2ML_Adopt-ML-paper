@@ -251,7 +251,7 @@ Lộ trình 21 ngày được chia thành 3 giai đoạn nhịp nhàng, tối ư
   - [x] *Hiên:* Soạn Slide 17 – 19 (Benchmark CIFAR-100, tuyên bố Core Scope, tích hợp W&B).
 * **Ngày 11/11 (Thứ 4): Thực thi Sensitivity Sweep**
   - [x] *Hiên:* Chạy script quét độ nhạy `src/sweep_alpha.py` với $\alpha \in \{0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9\}$ (kèm mốc đối chứng $\alpha = 0.0$ khi không hiệu chỉnh) và $\tau \in \{8, 16, 32, 64\}$, ghi nhận toàn bộ run vào project W&B chung. Xuất biểu đồ kết quả.
-  - [ ] *Long:* Lập bảng đối chiếu (Comparison Table) giữa số liệu nhóm đo được và số liệu Table 1 trong bài báo gốc.
+  - [x] *Long:* Lập bảng đối chiếu (Comparison Table) giữa số liệu nhóm đo được và số liệu Table 1 trong bài báo gốc.
 * **Ngày 12/11 (Thứ 5): Phân tích Sai lệch (Deviation Analysis)**
   - [ ] *Long:* So sánh output của code tự viết với output khi chạy code tác giả. Xác định rõ nguyên nhân gây sai lệch.
   - [x] *Hiên:* Đưa biểu đồ Base session và Incremental sessions từ W&B vào Slide 20 – 22.
@@ -264,7 +264,7 @@ Lộ trình 21 ngày được chia thành 3 giai đoạn nhịp nhàng, tối ư
 ### Giai đoạn 3: Ghép nối, Hoàn thiện Speaker Notes & Đóng gói (15/11 – 20/11)
 * **Ngày 15/11 (Chủ nhật): Hoàn thiện Slide 27 - 28 & Cầu nối Lab 2**
   - [ ] *Hiên:* Soạn Slide 27 (Tổng kết) và Slide 28 (Giới thiệu giả định Semantic Overlap để làm bàn đạp cho Milestone 3 & Lab 2 cuối kỳ).
-  - [ ] *Long:* Rà soát lại toàn bộ code trong repo, đảm bảo mọi hàm đều có docstrings chuẩn và file `requirements.txt` sạch sẽ.
+  - [x] *Long:* Rà soát lại toàn bộ code trong repo, đảm bảo mọi hàm đều có docstrings chuẩn và file `requirements.txt` sạch sẽ.
 * **Ngày 16/11 (Thứ 2): Tổng rà soát Speaker Notes toàn bộ 28 Slide**
   - [ ] *Hiên:* Đọc từng slide kèm Speaker Notes, biên tập câu chữ mạch lạc, bảo đảm văn phong tự nhiên.
   - [ ] *Long:* Kiểm tra tính chính xác của các công thức toán và số liệu thực nghiệm trong Notes, bảo đảm không có slide nào vượt quá 500 từ.
