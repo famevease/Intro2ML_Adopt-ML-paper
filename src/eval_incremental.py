@@ -10,8 +10,7 @@ import wandb
 from src.calibration import calibrate_new_prototypes, compute_raw_prototypes
 from src.dataset import CIFARDatasetFSCIL
 from src.models import ResNet20CIFAR
-from src.utils import compute_fscil_metrics, compute_pd, seed_everything
-
+from src.utils import compute_fscil_metrics, seed_everything
 
 # Số liệu chuẩn của TEEN trên CIFAR-100 từ Table 6 (Appendix C.2, NeurIPS 2023)
 PAPER_CIFAR100_TEEN = {
@@ -173,16 +172,13 @@ def evaluate_incremental_fscil(args: argparse.Namespace) -> None:
             preds=preds,
             targets=targets,
             num_base_classes=60,
+            session0_acc=session0_acc,
         )
 
         if session == 0:
             session0_acc = metrics["avg_acc"]
 
-        pd_rate = compute_pd(
-            acc_session_0=session0_acc,
-            acc_last_session=metrics["avg_acc"],
-        )
-
+        pd_rate = metrics["pd"]
         paper_acc = PAPER_CIFAR100_TEEN[session]
         rel_dev = ((metrics["avg_acc"] - paper_acc) / paper_acc) * 100.0
 
@@ -192,7 +188,7 @@ def evaluate_incremental_fscil(args: argparse.Namespace) -> None:
             "avg_acc": metrics["avg_acc"],
             "base_acc": metrics["base_acc"],
             "new_acc": metrics["new_acc"],
-            "hmean": metrics["h_mean"],
+            "hmean": metrics["hmean"],
             "pd": pd_rate,
             "paper_acc": paper_acc,
             "rel_dev_pct": round(rel_dev, 2),
@@ -204,7 +200,7 @@ def evaluate_incremental_fscil(args: argparse.Namespace) -> None:
             "eval/avg_acc": metrics["avg_acc"],
             "eval/base_acc": metrics["base_acc"],
             "eval/new_acc": metrics["new_acc"],
-            "eval/hmean": metrics["h_mean"],
+            "eval/hmean": metrics["hmean"],
             "eval/pd": pd_rate,
             "paper/avg_acc": paper_acc,
         })
@@ -212,7 +208,7 @@ def evaluate_incremental_fscil(args: argparse.Namespace) -> None:
         print(
             f"Session {session:<1} | {active_classes:<7} | "
             f"{metrics['avg_acc']:<10.2f} | {metrics['base_acc']:<9.2f} | "
-            f"{metrics['new_acc']:<9.2f} | {metrics['h_mean']:<9.2f} | "
+            f"{metrics['new_acc']:<9.2f} | {metrics['hmean']:<9.2f} | "
             f"{pd_rate:<7.2f} | {paper_acc:<9.2f}"
         )
 

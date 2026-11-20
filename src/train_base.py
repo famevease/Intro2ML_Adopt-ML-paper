@@ -157,7 +157,7 @@ if __name__ == "__main__":
     parser.add_argument("--lr", type=float, default=0.1)
     parser.add_argument("--tau", type=float, default=16.0)
     parser.add_argument("--seed", type=int, default=2026)
-    parser.add_argument("--wandb_entity", type=str, default="tghien")
+    parser.add_argument("--wandb_entity", type=str, default=None)
     parser.add_argument("--wandb_project", type=str, default="Intro2ML-Group05")
     args = parser.parse_args()
     train_base_session(args) 

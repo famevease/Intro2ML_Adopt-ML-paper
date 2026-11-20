@@ -1,5 +1,6 @@
 import os
 import random
+from typing import Optional
 
 import numpy as np
 import torch
@@ -28,7 +29,7 @@ def compute_fscil_metrics(
     preds: torch.Tensor,
     targets: torch.Tensor,
     num_base_classes: int = 60,
-    session0_acc: float | None = None,
+    session0_acc: Optional[float] = None,
 ) -> dict[str, float]:
     """Tính toán bộ 5 chỉ số đánh giá chuẩn cho bài toán FSCIL.
 
