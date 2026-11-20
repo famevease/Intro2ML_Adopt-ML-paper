@@ -227,7 +227,7 @@ Lộ trình 21 ngày được chia thành 3 giai đoạn nhịp nhàng, tối ư
   - [ ] *Long:* Bóc tách công thức Section 3 ra mã giả (pseudocode), xác định danh sách các hàm cần tự viết trong `src/calibration.py`.
 * **Ngày 03/11 (Thứ 3): Xử lý Dữ liệu CIFAR-100**
   - [x] *Hiên:* Soạn nội dung và Speaker Notes cho Slide 1 – 4 (Bối cảnh FSCIL, ví dụ thực tế).
-  - [ ] *Long:* Viết file `src/dataset.py` để tự động tải và chia CIFAR-100 thành 60 lớp base và 8 incremental tasks (5-way 5-shot). Chạy thử repo tác giả để lấy số liệu đối chiếu ban đầu.
+  - [x] *Long:* Viết file `src/dataset.py` để tự động tải và chia CIFAR-100 thành 60 lớp base và 8 incremental tasks (5-way 5-shot). Chạy thử repo tác giả để lấy số liệu đối chiếu ban đầu.
 * **Ngày 04/11 (Thứ 4): Sơ đồ đầu tiên & Backbone Model**
   - [x] *Hiên:* Tự vẽ sơ đồ 1: Bài toán FSCIL & Hiện tượng Catastrophic Forgetting (vẽ trực tiếp trong slide PowerPoint).
   - [ ] *Long:* Viết `src/models.py` dựng mạng ResNet-18/20 chuẩn cho CIFAR-100.
