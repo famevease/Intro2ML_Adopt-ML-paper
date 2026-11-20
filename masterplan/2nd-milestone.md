@@ -235,10 +235,10 @@ Lộ trình 21 ngày được chia thành 3 giai đoạn nhịp nhàng, tối ư
   - [x] *Hiên:* Soạn Slide 5 – 8 (Phân tích hạn chế của tiền nhiệm) kèm Speaker Notes chi tiết.
   - [x] *Long:* Viết script huấn luyện Base session `src/train_base.py`, tích hợp ghi log loss và accuracy thời gian thực lên W&B.
 * **Ngày 06/11 (Thứ 6): Họp Checkpoint Tuần 1**
-  - [ ] *Chung:* Rà soát chéo: Repo đã có code tải data sạch; Slide deck đã lên khung xong 8 slide đầu.
+  - [x] *Chung:* Rà soát chéo: Repo đã có code tải data sạch; Slide deck đã lên khung xong 8 slide đầu.
 ### Giai đoạn 2: Hiện thực hóa Thuật toán & Soạn thảo Trọng tâm (07/11 – 14/11)
 * **Ngày 07/11 (Thứ 7): Huấn luyện Base Session & Vẽ Sơ đồ TEEN**
-  - [ ] *Long:* Chạy huấn luyện Base session trên 60 lớp CIFAR-100 (100 epochs, mất ~20 phút trên Colab GPU). Lưu checkpoint weights vào `checkpoints/base_model.pth`. Log W&B đầy đủ.
+  - [x] *Long:* Chạy huấn luyện Base session trên 60 lớp CIFAR-100 (100 epochs, mất ~20 phút trên Colab GPU). Lưu checkpoint weights vào `checkpoints/base_model.pth`. Log W&B đầy đủ.
   - [x] *Hiên:* Dùng Figma/Draw.io vẽ sơ đồ kiến trúc tổng thể TEEN (`slides/assets/teen_pipeline.png`) và sơ đồ kéo vector bằng tổ hợp lồi (`slides/assets/convex_calibration.png`).
 * **Ngày 08/11 (Chủ nhật): Tự viết Module Hiệu chuẩn Prototype**
   - [ ] *Long:* Tự viết file `src/calibration.py` hoàn chỉnh từ công thức toán học (hàm tính raw prototype, cosine similarity, softmax weights, convex update). Viết docstrings đầy đủ.
