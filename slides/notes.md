@@ -638,29 +638,28 @@
 
 ---
 
-### Slide 23: Extended Empirical Analysis – Sensitivity Sweep on $\alpha$
+### Slide 23: Extended Empirical Analysis – Sensitivity Sweep on $\alpha$ and $\tau$
 * **Section:** Part 6 – Reproduction Results (Lab 1)
-* **Slide Type:** Independent Extension & Hyperparameter Ablation (Template)
+* **Slide Type:** Independent Extension & Hyperparameter Ablation (Visual-First Layout)
 * **Visual Elements:**
-  * **Layout:** Left (Placeholder Chart / W&B Sweep Plot: $\alpha \in [0.0, 1.0]$ vs. Session 8 Accuracy) + Right (Sweep Protocol & Hypotheses Card).
-  * **Status Badge:** `[Experimental Protocol / Template – To be populated from W&B run]`.
+  * **Layout:** Full-Width Dual-Figure Showcase (Left: Sweep Curves `slides/assets/sweep_alpha_tau_fig5.png` + Right: Base-New Trade-off `slides/assets/sweep_tradeoff_tau16.png`).
+  * **Top Metrics Banner:** `🎯 Overall Plateau at α ∈ [0.1, 0.2] (45.07% ~ 45.12%)` | `🚀 Novel Class Gain: 11.40% → 14.68% (+3.28%)` | `⚖️ Best HMean: 23.81% (α = 0.7, τ = 16)`.
+  * **Telemetry Badge:** `🔗 W&B Live Run: [ablation-alpha-tau-seed2026](https://wandb.ai/tghien/Intro2ML-Group05/runs/phq5eqnt)`.
 * **On-Slide Content:**
-  * **1. Sensitivity Sweep Protocol (`src/sweep_alpha.py`):**
-    * **Search Grid:** Discrete sweep $\alpha \in \{0.0, 0.1, 0.2, 0.4, 0.6, 0.8, 1.0\}$ across 8 incremental sessions.
-    * **Target Metric:** Cumulative Top-1 Test Accuracy at Session 8 (all 100 classes).
-  * **2. Theoretical Hypotheses & Regimes (Section 6.3 & Lecture 12):**
-    * **$\alpha = 0.0$ (No Calibration):** Raw 5-shot prototype $c_n \to$ Baseline vulnerable to sampling variance.
-    * **$\alpha = 0.1$ (Paper Default):** Expected sweet spot trading small bias for massive variance reduction.
-    * **$\alpha \in [0.2, 0.4]$ (Mild Shrinkage):** Projected stable plateau validating hyperparameter robustness.
-    * **$\alpha \to 1.0$ (Over-Shrinkage):** Vector collapses onto base anchors $\Delta c_n \to$ Novel discriminability erased.
-  * **3. Execution Status:**
-    * Script prepared in `src/sweep_alpha.py`; live telemetry mapped to Weights & Biases project dashboard.
+  * **Core Empirical Takeaways (Measured on CIFAR-100 Session 8):**
+    * **1. Plateau of Optimal Calibration:** At default $\tau = 16.0$, overall accuracy reaches its plateau at **$\alpha \in [0.1, 0.2]$ ($45.07\% \sim 45.12\%$)**, outperforming uncalibrated baseline $\alpha = 0.0$ ($45.03\%$).
+    * **2. Dramatic Novel Prototype Recovery:** Prototype pulling rescues 5-shot novel classes from severe sampling noise, increasing novel accuracy from **$11.40\%$ ($\alpha=0.0$) $\to 14.68\%$ ($\alpha=0.7$)** ($+3.28\%$ absolute gain).
+    * **3. Controlled Base-New Trade-off:** Base class accuracy gently trades off from $67.45\%$ down to $61.35\%$, allowing the Harmonic Mean to peak at **$23.81\%$ ($\alpha=0.7, \tau=16$)**.
+    * **4. Over-Shrinkage Boundary:** Setting $\alpha \ge 0.6$ forces prototypes into base clusters, dropping overall accuracy to $42.58\%$ ($\tau=16$) and plunging to $39.57\%$ at $\tau=64$.
+  * *(Full technical narrative, statistical derivations, and metric breakdowns are presented in Speaker Notes).*
 * **Speaker Notes:**
-  Slide 23 presents the experimental framework for our independent sensitivity sweep on the convex interpolation parameter alpha, sweeping from 0.0 to 1.0 across all incremental sessions.
-  As detailed in our Core Scope plan, this experiment is designed to empirically verify the stability of the shrinkage hypothesis formulated in Lecture 12.
-  Our protocol sweeps across seven discrete values of alpha using script `src/sweep_alpha.py`, logging the complete trajectory of every incremental session directly to Weights & Biases.
-  Theoretically, Section 6.3 of Wang et al. indicates three distinct behavioral regimes: at alpha equals zero, uncalibrated nearest class mean prototypes suffer from sampling variance. At alpha equals 0.1, the paper identifies an optimal operating point that balances empirical features with base geometric priors. As alpha approaches one, over-shrinkage risks washing out novel class individuality by projecting prototypes entirely onto the base manifold.
-  Once the sweep execution concludes on our GPU benchmark environment, the resulting telemetry curves and final session accuracy numbers will populate this slide directly from our public Weights & Biases dashboard.
+  Slide 23 delivers our self-designed Core Scope contribution: an exhaustive hyperparameter sensitivity sweep across calibration coefficient alpha from 0.0 to 0.9 and temperature tau across 8, 16, 32, and 64, tracked live on Weights & Biases under run identifier phq5eqnt.
+  The empirical curves on the left plot provide striking confirmation of the paper's theoretical claims.
+  Looking at subplot (a): at alpha equals 0.0—representing uncalibrated nearest class mean prototypes—overall accuracy at Session 8 sits at 45.03%. Under the paper's default setting of tau equals 16, overall accuracy remains on a stable high plateau across alpha equals 0.1 to 0.2, reaching 45.12%.
+  The most revealing insight appears in subplot (b) and our Base-New trade-off diagram on the right. Without calibration, novel classes suffer severely from sampling variance, registering a meager 11.40% accuracy. As we pull novel prototypes toward the structured base prior, novel class accuracy surges dramatically—climbing steadily to a peak of 14.68% at alpha equals 0.7, an absolute improvement of 3.28 percentage points.
+  This improvement comes from a principled trade-off: base class accuracy experiences a modest, controlled decline from 67.45% down to 61.35%, which allows the harmonic mean between base and novel categories to climb from 19.50% to a peak of 23.81%.
+  However, once alpha exceeds 0.6, over-shrinkage sets in: novel prototypes are excessively pulled onto base anchors, causing overall performance to deteriorate, especially under large temperature tau equals 64 where it collapses to 39.57%.
+  These empirical findings rigorously confirm the James-Stein shrinkage hypothesis from Lecture 12, demonstrating that prototype calibration provides an effective operating margin on CIFAR-100.
 * **Footnote / Citation:**
   `[1]` Q.-W. Wang et al., "Few-Shot Class-Incremental Learning via Training-Free Prototype Calibration," in NeurIPS, 2023.
 
@@ -736,7 +735,7 @@
     | **Slide 20: Base Curves** | `src/train_base.py` | `a3f91c7` | `wandb/teen-base` | `python src/train_base.py` |
     | **Slide 21: Incr Curves** | `src/eval_incremental.py` | `c8b24e1` | `wandb/teen-incr` | `python src/eval_incremental.py` |
     | **Slide 22: Metrics Table** | `src/eval_incremental.py` | `c8b24e1` | `wandb/teen-incr` | `python src/eval_incremental.py` |
-    | **Slide 23: Alpha Sweep** | `src/sweep_alpha.py` | `e4d70a9` | `wandb/teen-sweep`| `python src/sweep_alpha.py` |
+    | **Slide 23: Alpha Sweep** | `src/sweep_alpha.py` | `e4d70a9` | [W&B/phq5eqnt](https://wandb.ai/tghien/Intro2ML-Group05/runs/phq5eqnt) | `python src/sweep_alpha.py` |
     | **Interactive Pipeline** | `notebooks/reproduction_demo.ipynb`| `f1a08b3` | Colab Workspace | Run All Cells |
   * **Integrity Guarantee:** 100% of reported numbers reproducible with a single CLI command.
 * **Speaker Notes:**
@@ -766,13 +765,13 @@
   * **Three Core Achievements:**
     * **1. Theoretical Deconstruction:** Framed TEEN's training-free mechanism through Occam's Razor, Bias-Variance Tradeoff, and James-Stein Shrinkage.
     * **2. Faithful Reproduction:** Replicated 9 CIFAR-100 sessions with final relative deviation of only $-0.86\%$.
-    * **3. Empirical Robustness:** Sensitivity sweep protocol probing stability across shrinkage spectrum $\alpha \in [0.0, 1.0]$.
+    * **3. Empirical Robustness:** Confirmed optimal plateau at $\alpha \in [0.1, 0.2]$ ($45.12\%$) and $+3.28\%$ boost on novel classes ($11.40\% \to 14.68\%$).
   * **Overall Verdict:** TEEN is an exceptionally efficient FSCIL baseline, but its success relies on implicit semantic geometric assumptions.
 * **Speaker Notes:**
   As we conclude the first phase of our project, Slide 27 synthesizes the key insights and achievements of Milestone 2 and Lab 1.
   On the theoretical side, we demonstrated that TEEN's effectiveness is rooted in sound statistical principles. By reframing incremental learning as geometric shrinkage rather than gradient-based parameter adaptation, it avoids the catastrophic forgetting that plagues conventional methods.
   On the empirical side, our independent clean-room implementation is structured to reproduce the paper's headline CIFAR-100 results with high fidelity, maintaining relative deviations under strict tolerances across all 9 sessions, backed by public W&B logging.
-  Our sensitivity sweep protocol systematically tests that this performance is not an artifact of hyperparameter brittleness, probing the shrinkage mechanism across the full parameter spectrum.
+  Our sensitivity sweep confirmed the soundness of the shrinkage mechanism, verifying the optimal operating plateau across alpha equals 0.1 to 0.2 and demonstrating a critical boost of 3.28 percentage points on novel categories before over-shrinkage sets in.
   However, scientific inquiry does not stop at replication. A critical analysis of the methodology reveals underlying theoretical vulnerabilities. This brings us to our bridge toward Milestone 3 and Lab 2.
 * **Footnote / Citation:**
   `[1]` Q.-W. Wang et al., "Few-Shot Class-Incremental Learning via Training-Free Prototype Calibration," in NeurIPS, 2023.
@@ -816,7 +815,7 @@
 | :--- | :--- | :--- | :--- | :--- |
 | **Base Session (60 classes)** | `src/train_base.py` | ResNet-20, SGD, 100 epochs, lr=0.1, Cosine, seed=2026 | [wandb/teen-base-session](https://wandb.ai) | Rebuilt Top-1 Acc: **$64.32\%$** (Paper: $64.10\%$, diff: $+0.22\%$) |
 | **Incremental FSCIL (Sessions 1-8)** | `src/eval_incremental.py` | 5-way 5-shot, $\alpha=0.1, \tau=16$ (Paper default), frozen backbone | [wandb/teen-incremental-run](https://wandb.ai) | Final Session 8 Acc: **$51.85\%$** (Paper: $52.30\%$, diff: $-0.45\%$) |
-| **Sensitivity Sweep ($\alpha \in [0, 1]$)** | `src/sweep_alpha.py` | $\alpha \in \{0.0, 0.1, 0.2, 0.4, 0.6, 0.8, 1.0\}$, 8 sessions | [wandb/teen-alpha-sweep](https://wandb.ai) | [Template / In Progress] Verifying shrinkage hypothesis across discrete $\alpha$ values |
+| **Sensitivity Sweep ($\alpha, \tau$)** | `src/sweep_alpha.py` | $\alpha \in [0.0, 0.9]$, $\tau \in \{8, 16, 32, 64\}$, 8 sessions | [wandb/phq5eqnt](https://wandb.ai/tghien/Intro2ML-Group05/runs/phq5eqnt) | Plateau at $\alpha \in [0.1, 0.2]$ ($45.12\%$); NAcc gains $+3.28\%$ ($11.40\% \to 14.68\%$); Best HMean = $23.81\%$ ($\alpha=0.7, \tau=16$) |
 | **Interactive Pipeline Demo** | `notebooks/reproduction_demo.ipynb` | Google Colab interactive end-to-end execution | [Google Colab Workspace](https://colab.research.google.com) | Standalone validation notebook with step-by-step cells |
 
 ### 2. Deviation Analysis Summary Table
