@@ -224,7 +224,7 @@ Lộ trình 21 ngày được chia thành 3 giai đoạn nhịp nhàng, tối ư
   - [x] *Long:* Tải mã nguồn gốc của tác giả TEEN về máy, đọc script huấn luyện để ghi nhận các siêu tham số mặc định.
 * **Ngày 02/11 (Thứ 2): Dàn ý chi tiết & Bóc tách mã giả**
   - [x] *Hiên:* Soạn dàn ý chi tiết 28 slide vào file `slides/notes.md`.
-  - [ ] *Long:* Bóc tách công thức Section 3 ra mã giả (pseudocode), xác định danh sách các hàm cần tự viết trong `src/calibration.py`.
+  - [x] *Long:* Bóc tách công thức Section 3 ra mã giả (pseudocode), xác định danh sách các hàm cần tự viết trong `src/calibration.py`.
 * **Ngày 03/11 (Thứ 3): Xử lý Dữ liệu CIFAR-100**
   - [x] *Hiên:* Soạn nội dung và Speaker Notes cho Slide 1 – 4 (Bối cảnh FSCIL, ví dụ thực tế).
   - [x] *Long:* Viết file `src/dataset.py` để tự động tải và chia CIFAR-100 thành 60 lớp base và 8 incremental tasks (5-way 5-shot). Chạy thử repo tác giả để lấy số liệu đối chiếu ban đầu.
