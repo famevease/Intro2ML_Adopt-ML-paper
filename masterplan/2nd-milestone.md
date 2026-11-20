@@ -248,7 +248,7 @@ Lộ trình 21 ngày được chia thành 3 giai đoạn nhịp nhàng, tối ư
   - [x] *Hiên:* Soạn Slide 13 – 16 (Cơ chế toán học, công thức hiệu chuẩn, độ phức tạp $O(1)$) kèm Speaker Notes phân tích cặn kẽ.
 * **Ngày 10/11 (Thứ 3): Bàn giao Code & Chuẩn bị Sweep**
   - [ ] *Long:* Kiểm tra lại code, đẩy lên nhánh `main`, bàn giao script cho Hiên chạy sweep.
-  - [ ] *Hiên:* Soạn Slide 17 – 19 (Benchmark CIFAR-100, tuyên bố Core Scope, tích hợp W&B).
+  - [x] *Hiên:* Soạn Slide 17 – 19 (Benchmark CIFAR-100, tuyên bố Core Scope, tích hợp W&B).
 * **Ngày 11/11 (Thứ 4): Thực thi Sensitivity Sweep**
   - [ ] *Hiên:* Chạy script quét độ nhạy `src/sweep_alpha.py` với $\alpha \in \{0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9\}$ (kèm mốc đối chứng $\alpha = 0.0$ khi không hiệu chỉnh) và $\tau \in \{8, 16, 32, 64\}$, ghi nhận toàn bộ run vào project W&B chung. Xuất biểu đồ kết quả.
   - [ ] *Long:* Lập bảng đối chiếu (Comparison Table) giữa số liệu nhóm đo được và số liệu Table 1 trong bài báo gốc.
