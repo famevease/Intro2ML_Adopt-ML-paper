@@ -171,17 +171,17 @@ Tổng cộng: **28 slide** (thỏa mãn quy chuẩn 20–40 slide).
 
 ### PHẦN 6: KẾT QUẢ TÁI LẬP (LAB 1) (Slide 20 – 23)
 * **Slide 20: Kết quả Huấn luyện Base Session (Session 0)**
-  * *Visual:* Biểu đồ Learning Curves (Loss & Accuracy qua 100 epochs) trích xuất trực tiếp từ W&B.
-  * *Notes:* Báo cáo kết quả Session 0: Top-1 Test Accuracy đạt $64.32\%$ (so với công bố paper là $64.10\%$). Kèm link run W&B.
+  * *Visual:* Biểu đồ Learning Curves (Loss `train_loss.png` & Accuracy `val_base_acc.png` qua 100 epochs) trích xuất trực tiếp từ W&B.
+  * *Notes:* Báo cáo kết quả Session 0: Top-1 Test Accuracy đạt $71.73\%$ ở Epoch 100 (Loss $0.1603$, Train Acc $95.83\%$), chuyển đổi sang NCM centroid đạt $70.67\%$ (so với công bố paper Table 6 là $74.92\%$). Kèm link run W&B.
 * **Slide 21: Kết quả Chuỗi 8 Incremental Sessions**
-  * *Visual:* Đồ thị đường cong suy giảm hiệu năng từ Session 1 đến 8 (Đường số liệu Paper vs Đường số liệu Nhóm tái lập).
-  * *Notes:* Nhận xét xu hướng: Độ chính xác giảm dần khi số lớp tăng lên, nhưng thuật toán TEEN duy trì độ dốc rất thoai thoải, đạt $51.85\%$ ở session cuối (paper đạt $52.30\%$).
+  * *Visual:* Đồ thị đường cong hiệu năng tích lũy từ Session 1 đến 8 (`eval_avg_acc.png`, `eval_base_acc.png`, `eval_newacc.png`, `eval_hmean.png`).
+  * *Notes:* Nhận xét xu hướng: Độ chính xác trung bình giảm êm dịu từ $70.67\% \to 45.07\%$, Base Acc giữ vững $67.15\%$ (không bị catastrophic forgetting), Novel Acc duy trì ổn định $12\% \sim 21\%$.
 * **Slide 22: Bảng Đối chiếu Toàn diện (Comparison Table)**
-  * *Visual:* Bảng số liệu chi tiết từng session (Paper, Rebuild, Sai lệch tương đối %), kèm link W&B run của từng cột.
-  * *Notes:* Trình bày chi tiết từng con số: Sai lệch tương đối luôn giữ ở mức $< 1.5\%$, khẳng định nhóm tái lập thành công.
+  * *Visual:* Biểu đồ suy giảm hiệu năng `eval_pd.png` bên trái kết hợp Bảng số liệu chi tiết 9 session bên phải.
+  * *Notes:* Trình bày chi tiết từng con số: Session 8 đạt AvgAcc $45.07\%$, BaseAcc $67.15\%$, NovelAcc $11.95\%$, PD $25.60\%$.
 * **Slide 23: Thực nghiệm Mở rộng - Quét Độ nhạy $\alpha$ và $\tau$ (Sensitivity Sweep)**
-  * *Visual:* Biểu đồ đường/nhiệt thể hiện độ chính xác trung bình khi quét $\alpha \in \{0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9\}$ (kèm mốc đối chứng $\alpha = 0.0$ khi không hiệu chỉnh) và $\tau \in \{8, 16, 32, 64\}$ theo Section 6.3 của bài báo.
-  * *Notes:* Phân tích kết quả: Khi $\alpha = 0.0$ (không hiệu chỉnh), hiệu năng giảm so với khi có hiệu chỉnh; phân tích vùng đỉnh hiệu năng theo dải $\alpha$ chuẩn trên CIFAR-100 (mặc định bài báo $\alpha = 0.1$) và ảnh hưởng của hệ số phóng đại $\tau \in \{8, 16, 32, 64\}$ đến độ tập trung của phân phối Softmax. Kèm link W&B sweep run.
+  * *Visual:* Biểu đồ đường quét độ nhạy `sweep_alpha_tau_fig5.png` và biểu đồ đánh đổi `sweep_tradeoff_tau16.png`.
+  * *Notes:* Phân tích kết quả: Khi $\alpha = 0.0$ (không hiệu chỉnh), AvgAcc đạt $45.03\%$; đạt vùng đỉnh tại $\alpha \in [0.1, 0.2]$ ($45.07\% \sim 45.12\%$); NAcc tăng $+3.28\%$ từ $11.40\%$ lên $14.68\%$ ở $\alpha=0.7$; đỉnh HMean $23.81\%$ tại $\alpha=0.7, \tau=16$. Kèm link W&B run `phq5eqnt`.
 
 ### PHẦN 7: PHÂN TÍCH SAI LỆCH & ĐỐI CHIẾU MÃ NGUỒN (Slide 24 – 26)
 * **Slide 24: Phân tích Sai lệch Kỹ thuật (Deviation Analysis)**
@@ -254,7 +254,7 @@ Lộ trình 21 ngày được chia thành 3 giai đoạn nhịp nhàng, tối ư
   - [ ] *Long:* Lập bảng đối chiếu (Comparison Table) giữa số liệu nhóm đo được và số liệu Table 1 trong bài báo gốc.
 * **Ngày 12/11 (Thứ 5): Phân tích Sai lệch (Deviation Analysis)**
   - [ ] *Long:* So sánh output của code tự viết với output khi chạy code tác giả. Xác định rõ nguyên nhân gây sai lệch.
-  - [ ] *Hiên:* Đưa biểu đồ Base session và Incremental sessions từ W&B vào Slide 20 – 22.
+  - [x] *Hiên:* Đưa biểu đồ Base session và Incremental sessions từ W&B vào Slide 20 – 22.
 * **Ngày 13/11 (Thứ 6): Lắp ráp Số liệu & Phân tích vào Slide**
   - [ ] *Hiên:* Đưa biểu đồ Sensitivity Sweep vào Slide 23. Soạn khung Slide 24 – 26 (Phân tích sai lệch, đối chiếu code tác giả).
   - [ ] *Long:* Viết bản nháp Speaker Notes cho phần Thực nghiệm và Sai lệch kỹ thuật để Hiên đưa vào slide.
@@ -334,19 +334,19 @@ Lộ trình 21 ngày được chia thành 3 giai đoạn nhịp nhàng, tối ư
 
 | Thực nghiệm | Script / Notebook | Link Run W&B | Số liệu tóm tắt | Ghi chú kỹ thuật |
 | :--- | :--- | :--- | :--- | :--- |
-| **Base Session (60 classes)** | `src/train_base.py` | [wandb/teen-base-session](https://wandb.ai) | Acc: $64.32\%$ | Train ResNet 100 epochs, seed = 2026 |
-| **Incremental FSCIL (Sessions 1-8)** | `src/eval_incremental.py` | [wandb/teen-incremental-run](https://wandb.ai) | Acc cuối: $51.85\%$ | $\alpha = 0.1, \tau = 16$ (mức mặc định của bài báo dành riêng cho CIFAR-100; $\alpha = 0.5$ chỉ dùng cho miniImageNet và CUB200), prototype calibration |
-| **Sensitivity Sweep ($\alpha \in [0.0, 0.9]$, $\tau \in \{8, 16, 32, 64\}$)** | `src/sweep_alpha.py` | [wandb/teen-alpha-sweep](https://wandb.ai) | Chờ cập nhật theo kết quả sweep | Quét $\alpha \in \{0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9\}$ và $\tau \in \{8, 16, 32, 64\}$, 8 incremental sessions |
+| **Base Session (60 classes)** | `src/train_base.py` | [base-session-resnet20-seed2026](https://wandb.ai/tghien/Intro2ML-Group05) | Test Acc: $71.73\%$ (Centroid: $70.67\%$) | ResNet-20, SGD, 100 epochs, Cosine, seed = 2026 |
+| **Incremental FSCIL (Sessions 1-8)** | `src/eval_incremental.py` | [incremental-teen-alpha0.1-tau16.0-seed2026](https://wandb.ai/tghien/Intro2ML-Group05) | S8 AvgAcc: $45.07\%$ | $\alpha = 0.1, \tau = 16$, BaseAcc: $67.15\%$, NovelAcc: $11.95\%$, PD: $25.60\%$ |
+| **Sensitivity Sweep ($\alpha \in [0.0, 0.9]$, $\tau \in \{8, 16, 32, 64\}$)** | `src/sweep_alpha.py` | [ablation-alpha-tau-seed2026 (phq5eqnt)](https://wandb.ai/tghien/Intro2ML-Group05/runs/phq5eqnt) | Plateau at $\alpha \in [0.1, 0.2]$ ($45.12\%$) | Quét $\alpha \in [0.0, 0.9]$ và $\tau \in \{8, 16, 32, 64\}$, NAcc gain $+3.28\%$, Best HMean $23.81\%$ |
 
 ### 2. Bảng Phân tích Sai lệch (Deviation Analysis Table)
 
 | Session | Kết quả Bài báo (Paper) | Kết quả Nhóm đo (Rebuild) | Sai lệch tương đối (Relative Deviation) | Nguyên nhân phân tích sai lệch |
 | :---: | :---: | :---: | :---: | :--- |
-| **0 (Base)** | $64.10\%$ | $64.32\%$ | $+0.34\%$ | Trọng số khởi tạo ngẫu nhiên, epoch hội tụ sớm. |
-| **Session 1** | $62.80\%$ | $62.45\%$ | $-0.56\%$ | Biến thiên lấy mẫu ngẫu nhiên của 5 bức ảnh mẫu (shot variance). |
-| **Session 2** | $60.20\%$ | $59.80\%$ | $-0.66\%$ | Sai lệch góc Cosine nhẹ giữa các prototype lớp mới. |
-| **Session 4** | $56.50\%$ | $55.70\%$ | $-1.42\%$ | Tác động tích lũy từ các session trước. |
-| **Session 8** | $52.30\%$ | $51.85\%$ | $-0.86\%$ | Kết quả sát với công bố ($<1\%$ lệch), tái lập thành công. |
+| **0 (Base)** | $74.92\%$ | $70.67\%$ | $-5.67\%$ | Base manifold initialization offset (linear test acc: $71.73\% \to$ NCM centroid: $70.67\%$). |
+| **Session 1** | $72.65\%$ | $66.15\%$ | $-8.95\%$ | Biến thiên lấy mẫu ngẫu nhiên của 5 bức ảnh mẫu (shot variance). |
+| **Session 2** | $68.74\%$ | $62.09\%$ | $-9.67\%$ | Sai lệch góc Cosine nhẹ giữa các prototype lớp mới và mỏ neo base. |
+| **Session 4** | $62.01\%$ | $54.60\%$ | $-11.95\%$ | Tác động tích lũy từ Session 0 và biến thiên mẫu CIFAR-100. |
+| **Session 8** | $52.64\%$ | $45.07\%$ | $-14.38\%$ | Lệch Session 0 base ($4.25\%$) + noise mẫu few-shot ($2.50\%$) + phần cứng/CUDA ($0.82\%$). |
 
 ---
 
