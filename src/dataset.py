@@ -13,6 +13,22 @@ class CIFARDatasetFSCIL:
     """
 
     def __init__(self, root: str = "./data", seed: int = 2026) -> None:
+        """Khởi tạo bộ quản lý dữ liệu CIFAR-100 theo giao thức FSCIL (Section 3.1 & 6.1.1).
+
+        Hiện thực hóa giao thức chia dữ liệu FSCIL trên CIFAR-100 (60 lớp cơ sở +
+        8 phiên 5-way 5-shot rời nhãn) theo Section 3.1 & Section 6.1.1 của bài báo
+        TEEN (Wang et al., NeurIPS 2023). Các chi tiết không nêu rõ trong bài báo
+        (thứ tự nhãn 0..99 của torchvision, hằng số chuẩn hóa và phép biến đổi
+        RandomCrop(32, padding=4) + RandomHorizontalFlip()) được cài đặt theo thông lệ
+        PyTorch.
+
+        Args:
+            root (str): Đường dẫn thư mục lưu trữ dữ liệu CIFAR-100 (mặc định: "./data").
+            seed (int): Hạt giống ngẫu nhiên cố định việc bốc mẫu 5-shot (mặc định: 2026).
+
+        Returns:
+            None
+        """
         self.root = root
         self.seed = seed
 

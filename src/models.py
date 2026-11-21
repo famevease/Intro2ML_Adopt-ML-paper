@@ -11,6 +11,20 @@ class BasicBlock(nn.Module):
     expansion: int = 1
 
     def __init__(self, in_planes: int, planes: int, stride: int = 1) -> None:
+        """Khởi tạo khối dư cơ bản (BasicBlock) cho kiến trúc ResNet-20 trên CIFAR-100.
+
+        Gồm hai lớp tích chập 3x3 kèm BatchNorm2d (không bias) và kết nối tắt (shortcut)
+        theo He et al. (CVPR 2016, Section 4.2), được bài báo TEEN chỉ định sử dụng cho
+        CIFAR-100 tại Section 6.1.1 & Appendix C.1.
+
+        Args:
+            in_planes (int): Số kênh đặc trưng đầu vào.
+            planes (int): Số kênh đặc trưng đầu ra của khối.
+            stride (int): Bước nhảy của lớp tích chập đầu tiên (mặc định: 1).
+
+        Returns:
+            None
+        """
         super().__init__()
         self.conv1 = nn.Conv2d(
             in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False
@@ -36,7 +50,15 @@ class BasicBlock(nn.Module):
             )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """Lan truyền thuận: F(x) + x rồi qua hàm kích hoạt ReLU."""
+        """Thực hiện lan truyền thuận qua hai lớp tích chập và cộng nhánh kết nối tắt.
+
+        Args:
+            x (torch.Tensor): Tensor đặc trưng đầu vào có kích thước (B, in_planes, H, W).
+
+        Returns:
+            torch.Tensor: Tensor đặc trưng đầu ra sau hàm kích hoạt ReLU có kích thước
+                (B, planes, H', W').
+        """
         out = F.relu(self.bn1(self.conv1(x)))
         out = self.bn2(self.conv2(out))
         out += self.shortcut(x)
@@ -53,6 +75,20 @@ class ResNet20CIFAR(nn.Module):
     """
 
     def __init__(self, num_classes: int = 100, tau: float = 16.0) -> None:
+        """Khởi tạo mạng ResNet-20 (d=64) kèm Cosine Classifier cho CIFAR-100.
+
+        Xây dựng theo kiến trúc chuẩn cho ảnh 32x32 (He et al., CVPR 2016, Section 4.2)
+        và thiết lập của TEEN trên CIFAR-100 (Section 6.1.1 & Appendix C.1): không dùng
+        MaxPool ở tầng đầu, gồm 3 cụm tầng (16 -> 32 -> 64 kênh) và lớp phân loại Cosine
+        không bias.
+
+        Args:
+            num_classes (int): Tổng số lớp tối đa của bộ phân loại (mặc định: 100).
+            tau (float): Hệ số nhiệt độ phóng đại độ tương đồng Cosine (mặc định: 16.0).
+
+        Returns:
+            None
+        """
         super().__init__()
         self.in_planes = 16
         self.tau = tau
@@ -72,7 +108,16 @@ class ResNet20CIFAR(nn.Module):
         self.fc = nn.Linear(self.feature_dim, num_classes, bias=False)
 
     def _make_layer(self, planes: int, num_blocks: int, stride: int) -> nn.Sequential:
-        """Tạo một cụm gồm num_blocks khối BasicBlock nối tiếp nhau."""
+        """Xây dựng một cụm tầng (stage) gồm các khối BasicBlock nối tiếp nhau.
+
+        Args:
+            planes (int): Số kênh đặc trưng đầu ra của cụm tầng.
+            num_blocks (int): Số lượng khối BasicBlock trong cụm (mặc định: 3 cho ResNet-20).
+            stride (int): Bước nhảy áp dụng cho khối đầu tiên của cụm để giảm kích thước không gian.
+
+        Returns:
+            nn.Sequential: Chuỗi các khối BasicBlock đã được ghép nối tuần tự.
+        """
         strides = [stride] + [1] * (num_blocks - 1)
         layers = []
         for s in strides:
