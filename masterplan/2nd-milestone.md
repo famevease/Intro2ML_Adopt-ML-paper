@@ -334,8 +334,8 @@ Lộ trình 21 ngày được chia thành 3 giai đoạn nhịp nhàng, tối ư
 
 | Thực nghiệm | Script / Notebook | Link Run W&B | Số liệu tóm tắt | Ghi chú kỹ thuật |
 | :--- | :--- | :--- | :--- | :--- |
-| **Base Session (60 classes)** | `src/train_base.py` | [base-session-resnet20-seed2026](https://wandb.ai/tghien/Intro2ML-Group05) | Test Acc: $71.73\%$ (Centroid: $70.67\%$) | ResNet-20, SGD, 100 epochs, Cosine, seed = 2026 |
-| **Incremental FSCIL (Sessions 1-8)** | `src/eval_incremental.py` | [incremental-teen-alpha0.1-tau16.0-seed2026](https://wandb.ai/tghien/Intro2ML-Group05) | S8 AvgAcc: $45.07\%$ | $\alpha = 0.1, \tau = 16$, BaseAcc: $67.15\%$, NovelAcc: $11.95\%$, PD: $25.60\%$ |
+| **Base Session (60 classes)** | `src/train_base.py` | [base-session-resnet20-seed2026 (7p556r1c)](https://wandb.ai/tghien/Intro2ML-Group05/runs/7p556r1c) | Test Acc: $71.73\%$ (Centroid: $70.67\%$) | ResNet-20, SGD, 100 epochs, Cosine, seed = 2026 |
+| **Incremental FSCIL (Sessions 1-8)** | `src/eval_incremental.py` | [incremental-teen-alpha0.1-tau16.0-seed2026 (mq51zgks)](https://wandb.ai/tghien/Intro2ML-Group05/runs/mq51zgks) | S8 AvgAcc: $45.07\%$ | $\alpha = 0.1, \tau = 16$, BaseAcc: $67.15\%$, NovelAcc: $11.95\%$, PD: $25.60\%$ |
 | **Sensitivity Sweep ($\alpha \in [0.0, 0.9]$, $\tau \in \{8, 16, 32, 64\}$)** | `src/sweep_alpha.py` | [ablation-alpha-tau-seed2026 (phq5eqnt)](https://wandb.ai/tghien/Intro2ML-Group05/runs/phq5eqnt) | Plateau at $\alpha \in [0.1, 0.2]$ ($45.12\%$) | Quét $\alpha \in [0.0, 0.9]$ và $\tau \in \{8, 16, 32, 64\}$, NAcc gain $+3.28\%$, Best HMean $23.81\%$ |
 
 ### 2. Bảng Phân tích Sai lệch (Deviation Analysis Table)

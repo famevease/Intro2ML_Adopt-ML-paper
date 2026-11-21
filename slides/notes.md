@@ -717,26 +717,26 @@
 * **Section:** Part 7 – Deviation Analysis & Code Divergence
 * **Slide Type:** Master Traceability Matrix
 * **Visual Elements:**
-  * **Layout:** Master Traceability Table (Slide Asset $\leftrightarrow$ Script $\leftrightarrow$ W&B Run Link $\leftrightarrow$ CLI Command).
+  * **Layout:** Master Traceability Table (aligned with README Section 4: Experiment $\leftrightarrow$ Script $\leftrightarrow$ W&B Run $\leftrightarrow$ Key Finding $\leftrightarrow$ CLI Command).
   * **Verification Badge:** `1-Click Google Colab Reproducibility`.
   * **Icons:** Terminal prompt icon for CLI commands.
 * **On-Slide Content:**
-  * **Master Traceability Matrix:**
-    | Slide Figure / Metric | Script in `src/` | W&B Run Identifier | CLI Command |
-    | :--- | :--- | :--- | :--- |
-    | **Slide 20: Base Curves** | `src/train_base.py` | [base-session-resnet20-seed2026 (7p556r1c)](https://wandb.ai/tghien/Intro2ML-Group05/runs/7p556r1c) | `python -m src.train_base` |
-    | **Slide 21: Incr Curves** | `src/eval_incremental.py` | [incremental-teen-alpha0.1-tau16.0-seed2026 (mq51zgks)](https://wandb.ai/tghien/Intro2ML-Group05/runs/mq51zgks) | `python -m src.eval_incremental` |
-    | **Slide 22: Metrics Table** | `src/eval_incremental.py` | [incremental-teen-alpha0.1-tau16.0-seed2026 (mq51zgks)](https://wandb.ai/tghien/Intro2ML-Group05/runs/mq51zgks) | `python -m src.eval_incremental` |
-    | **Slide 23: Alpha & Tau Sweep** | `src/sweep_alpha.py` | [ablation-alpha-tau-seed2026 (phq5eqnt)](https://wandb.ai/tghien/Intro2ML-Group05/runs/phq5eqnt) | `python -m src.sweep_alpha` |
-    | **Interactive Pipeline** | `notebooks/reproduction_demo.ipynb` | [Public W&B Project](https://wandb.ai/tghien/Intro2ML-Group05) | Run All Cells |
+  * **Master Traceability Matrix (W&B Mapping Table):**
+    | Experiment (Slide) | Script / Module | Public W&B Run Link | Key Replicated Findings | Reproducibility CLI Command |
+    | :--- | :--- | :--- | :--- | :--- |
+    | **Base Session** *(Slide 20)* | `src/train_base.py` | [7p556r1c](https://wandb.ai/tghien/Intro2ML-Group05/runs/7p556r1c) | `Best Base Acc = 71.73%` (SGD) $\to$ `70.67%` (Centroid) | `python -m src.train_base` |
+    | **Incremental FSCIL** *(Slide 21–22)* | `src/eval_incremental.py` | [mq51zgks](https://wandb.ai/tghien/Intro2ML-Group05/runs/mq51zgks) | `Session 8 AvgAcc = 45.07%` \| `BAcc = 67.15%` \| `PD = 25.60%` | `python -m src.eval_incremental` |
+    | **Sensitivity Sweep** *(Slide 23)* | `src/sweep_alpha.py` | [phq5eqnt](https://wandb.ai/tghien/Intro2ML-Group05/runs/phq5eqnt) | 40 grid configs: Peak `HMean = 23.81%` at $\tau=16, \alpha=0.7$ | `python -m src.sweep_alpha` |
+    | **Interactive Demo** | `notebooks/reproduction_demo.ipynb` | [Public Colab](https://colab.research.google.com) | Standalone end-to-end evaluation pipeline | Run All Cells |
   * **Integrity Guarantee:** 100% of reported numbers reproducible with a single CLI module command (`python -m src.*`).
 * **Speaker Notes:**
-  Slide 26 provides our Master Traceability Matrix, completing our academic integrity audit trail.
-  Every quantitative figure, table, and performance curve presented across Slides 20 through 23 is explicitly mapped in this matrix to:
-  First: The exact source script in our `src/` directory that executed the experiment.
+  Slide 26 provides our Master Traceability Matrix, directly synchronized with Section 4 of our public repository README to complete our academic integrity audit trail.
+  Every quantitative figure, table, and performance curve presented across Slides 20 through 23 is explicitly mapped in this matrix:
+  First: The exact modular source script in our `src/` directory that executed the experiment.
   Second: The persistent public run identifier and direct URL on Weights & Biases—specifically run `7p556r1c` for Base Session training, run `mq51zgks` for the 8-session incremental evaluation, and run `phq5eqnt` for the 40-configuration sensitivity sweep.
-  Third: The exact module-level terminal command (`python -m src.train_base`, `python -m src.eval_incremental`, and `python -m src.sweep_alpha`) required to re-execute each job cleanly from the repository root with fixed seed 2026.
-  Furthermore, in `notebooks/reproduction_demo.ipynb`, we have packaged an end-to-end, self-contained Google Colab demonstration. An evaluator can open this notebook, execute the cells sequentially, and observe data downloading, base model loading, closed-form prototype calibration, and accuracy calculation in real time.
+  Third: A concise summary of the key benchmark metrics replicated by each run, confirming our base convergence at 71.73%, incremental retention at 67.15%, and optimal calibration trade-off.
+  Fourth: The exact module-level terminal command (`python -m src.train_base`, `python -m src.eval_incremental`, and `python -m src.sweep_alpha`) required to re-execute each job cleanly from the repository root with fixed seed 2026.
+  Furthermore, in `notebooks/reproduction_demo.ipynb`, we have packaged an end-to-end Google Colab demonstration enabling interactive step-by-step verification.
   We offer a complete guarantee: zero data fabrication, zero selective reporting, and total empirical transparency.
 * **Footnote / Citation:**
   `[16]` A. Paszke et al., "PyTorch: An imperative style, high-performance deep learning library," in NeurIPS, 2019.
@@ -804,8 +804,8 @@
 ### 1. Experimental Mapping Table (for README & Presentation Audit)
 | Experiment Identifier | Source Script / Notebook | Target Parameters & Config | Weights & Biases Live Telemetry | Reproduction Finding |
 | :--- | :--- | :--- | :--- | :--- |
-| **Base Session (60 classes)** | `src/train_base.py` | ResNet-20, SGD, 100 epochs, lr=0.1, Cosine, seed=2026 | [base-session-resnet20-seed2026](https://wandb.ai/tghien/Intro2ML-Group05) | Rebuilt Top-1 Test Acc: **$71.73\%$** (Epoch 100) / NCM Base Centroid: **$70.67\%$** (Paper: $74.92\%$) |
-| **Incremental FSCIL (Sessions 1-8)** | `src/eval_incremental.py` | 5-way 5-shot, $\alpha=0.1, \tau=16$ (Paper default), frozen backbone | [incremental-teen-alpha0.1-tau16.0-seed2026](https://wandb.ai/tghien/Intro2ML-Group05) | Final Session 8 AvgAcc: **$45.07\%$** (Paper: $52.64\%$); Base: $67.15\%$, Novel: $11.95\%$, PD: $25.60\%$ |
+| **Base Session (60 classes)** | `src/train_base.py` | ResNet-20, SGD, 100 epochs, lr=0.1, Cosine, seed=2026 | [base-session-resnet20-seed2026 (7p556r1c)](https://wandb.ai/tghien/Intro2ML-Group05/runs/7p556r1c) | Rebuilt Top-1 Test Acc: **$71.73\%$** (Epoch 100) / NCM Base Centroid: **$70.67\%$** (Paper: $74.92\%$) |
+| **Incremental FSCIL (Sessions 1-8)** | `src/eval_incremental.py` | 5-way 5-shot, $\alpha=0.1, \tau=16$ (Paper default), frozen backbone | [incremental-teen-alpha0.1-tau16.0-seed2026 (mq51zgks)](https://wandb.ai/tghien/Intro2ML-Group05/runs/mq51zgks) | Final Session 8 AvgAcc: **$45.07\%$** (Paper: $52.64\%$); Base: $67.15\%$, Novel: $11.95\%$, PD: $25.60\%$ |
 | **Sensitivity Sweep ($\alpha, \tau$)** | `src/sweep_alpha.py` | $\alpha \in [0.0, 0.9]$, $\tau \in \{8, 16, 32, 64\}$, 8 sessions | [ablation-alpha-tau-seed2026 (phq5eqnt)](https://wandb.ai/tghien/Intro2ML-Group05/runs/phq5eqnt) | Plateau at $\alpha \in [0.1, 0.2]$ ($45.07\% \sim 45.12\%$); NAcc gains $+3.28\%$ ($11.40\% \to 14.68\%$); Best HMean = $23.81\%$ ($\alpha=0.7, \tau=16$) |
 | **Interactive Pipeline Demo** | `notebooks/reproduction_demo.ipynb` | Google Colab interactive end-to-end execution | [Google Colab Workspace](https://colab.research.google.com) | Standalone validation notebook with step-by-step cells |
 
