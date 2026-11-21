@@ -93,36 +93,40 @@ python -m src.sweep_alpha \
 | **Sensitivity Sweep ($\alpha, \tau$)** | `src/sweep_alpha.py` | [ablation-alpha-tau-seed2026](https://wandb.ai/tghien/Intro2ML-Group05/runs/phq5eqnt) | Quét 40 tổ hợp $\alpha \in [0.0, 0.9]$ và $\tau \in \{8, 16, 32, 64\}$ tại Session 8 (đối chiếu Section 6.3, Figure 5) — `tau=16.0, alpha=0.7 -> AvgAcc=43.72%, NAcc=14.68%, HMean=23.81%`. |
 
 ---
+## 5. Đối chiếu Thực nghiệm & Phân tích Sai lệch (Deviation Analysis)
 
-## 5. Đối chiếu Kết quả & Phân tích Sai lệch (Comparison & Deviation Analysis)
+### 5.1. Bảng đối chiếu 3 chiều trên CIFAR-100 ($\alpha = 0.1, \tau = 16.0$)
 
-### 5.1. Bảng so sánh 3 chiều qua 9 phiên trên CIFAR-100
+Bảng dưới đây đối chiếu trực tiếp kết quả công bố tại **Table 6 & Table 8 (Appendix C.2)** của bài báo, kết quả thực thi nguyên bản kho mã nguồn chính thức `wangkiw/TEEN` trên hạ tầng Google Colab (NVIDIA L4), và kết quả tái lập độc lập (*clean-room*) của Nhóm 05 (`mq51zgks`):
 
-| Session | Số lớp | Paper gốc (Table 6, RTX 3090) | Repo gốc `wangkiw/TEEN` (Colab T4, 600ep) | Clean-room Nhóm 05 (`mq51zgks`, Colab T4) | Chênh lệch vs. Paper (%) | Sai lệch tương đối (%) | Rebuild BAcc (%) | Rebuild NAcc (%) | Rebuild HMean (%) |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 0 | 60 | 74.92% | `[ĐIỀN TỪ LOG]` | **70.67%** | -4.25 | -5.67% | 70.67 | — | — |
-| 1 | 65 | 72.65% | `[ĐIỀN TỪ LOG]` | **66.15%** | -6.50 | -8.95% | 69.92 | 21.00 | 32.30 |
-| 2 | 70 | 68.74% | `[ĐIỀN TỪ LOG]` | **62.09%** | -6.65 | -9.67% | 69.48 | 17.70 | 28.21 |
-| 3 | 75 | 65.01% | `[ĐIỀN TỪ LOG]` | **58.00%** | -7.01 | -10.78% | 69.15 | 13.40 | 22.45 |
-| 4 | 80 | 62.01% | `[ĐIỀN TỪ LOG]` | **54.60%** | -7.41 | -11.95% | 68.83 | 11.90 | 20.29 |
-| 5 | 85 | 59.29% | `[ĐIỀN TỪ LOG]` | **51.89%** | -7.40 | -12.48% | 68.35 | 12.40 | 20.99 |
-| 6 | 90 | 57.90% | `[ĐIỀN TỪ LOG]` | **49.66%** | -8.24 | -14.23% | 68.02 | 12.93 | 21.73 |
-| 7 | 95 | 54.76% | `[ĐIỀN TỪ LOG]` | **47.28%** | -7.48 | -13.66% | 67.82 | 12.09 | 20.52 |
-| 8 | 100 | **52.64%** | `[ĐIỀN TỪ LOG]` | **45.07%** | **-7.57** | **-14.38%** | **67.15** | **11.95** | **20.29** |
-| **PD ($\downarrow$)** | — | **22.28%** | `[ĐIỀN TỪ LOG]` | **25.60%** | **+3.32** | **+14.90%** | — | — | — |
+| Phiên (Session) | Số lớp | Paper gốc (Table 6, RTX 3090) | Repo gốc `wangkiw/TEEN` (Colab L4) | Clean-Room Nhóm 05 (`mq51zgks`, T4) | Chênh lệch (Clean-Room vs. Paper) | Sai lệch tương đối |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Session 0 (Base)** | 60 | `74.92%` | **`76.63%`** | **`70.67%`** | `-4.25` pp | `-5.67%` |
+| **Session 1** | 65 | `72.65%` | **`72.29%`** (`BAcc 75.70%`, `NAcc 31.40%`) | **`66.15%`** (`BAcc 69.92%`, `NAcc 21.00%`) | `-6.50` pp | `-8.95%` |
+| **Session 2** | 70 | `68.74%` | **`67.99%`** (`BAcc 74.80%`, `NAcc 27.10%`) | **`62.09%`** (`BAcc 69.48%`, `NAcc 17.70%`) | `-6.65` pp | `-9.67%` |
+| **Session 3** | 75 | `65.01%` | **`64.00%`** (`BAcc 73.78%`, `NAcc 24.87%`) | **`58.00%`** (`BAcc 69.15%`, `NAcc 13.40%`) | `-7.01` pp | `-10.78%` |
+| **Session 4** | 80 | `62.01%` | **`60.73%`** (`BAcc 73.10%`, `NAcc 23.60%`) | **`54.60%`** (`BAcc 68.83%`, `NAcc 11.90%`) | `-7.41` pp | `-11.95%` |
+| **Session 5** | 85 | `59.29%` | **`57.86%`** (`BAcc 71.85%`, `NAcc 24.28%`) | **`51.89%`** (`BAcc 68.35%`, `NAcc 12.40%`) | `-7.40` pp | `-12.48%` |
+| **Session 6** | 90 | `57.90%` | **`55.67%`** (`BAcc 71.13%`, `NAcc 24.73%`) | **`49.66%`** (`BAcc 68.02%`, `NAcc 12.93%`) | `-8.24` pp | `-14.23%` |
+| **Session 7** | 95 | `54.76%` | **`53.13%`** (`BAcc 70.83%`, `NAcc 22.77%`) | **`47.28%`** (`BAcc 67.82%`, `NAcc 12.09%`) | `-7.48` pp | `-13.66%` |
+| **Session 8 (Final)** | 100 | `52.64%` | **`51.11%`** (`BAcc 70.25%`, `NAcc 22.40%`) | **`45.07%`** (`BAcc 67.15%`, `NAcc 11.95%`) | **`-7.57` pp** | **`-14.38%`** |
+| **PD ($\downarrow$)** | — | **`22.28%`** | **`25.52%`** | **`25.60%`** | `+3.32` pp | `+14.90%` |
+| **Session 8 HMean** | 100 | **`37.11%`** *(Table 8)* | **`33.97%`** | **`20.29%`** | `-16.82` pp | `-45.32%` |
 
-### 5.2. Phân tích nguyên nhân phân kỳ giữa Clean-room và Mã nguồn gốc (`wangkiw/TEEN`)
+*(Ghi chú: Ở Session 0, độ chính xác phân loại tuyến tính SGD của bản clean-room đạt `71.73%` và đạt `70.67%` sau khi đồng nhất 60 trọng số thành 60 Empirical Base Prototypes theo Section 3.2; đối với `wangkiw/TEEN` trên Colab L4, hai mốc tương ứng là `78.37%` và `76.63%`).*
 
-Qua đối chiếu trực tiếp với kho mã nguồn công khai `wangkiw/TEEN` (chạy tách biệt chỉ để kiểm chứng), nhóm xác định chính xác **4 nguyên nhân kỹ thuật** gây ra độ lệch `-4.25%` ngay từ Session 0 và `-7.57%` tại Session 8:
+### 5.2. Phân tích định lượng nguyên nhân phân kỳ (2 tầng nguyên nhân)
 
-1. **Số vòng lặp huấn luyện Base Session (`600` vs. `100` epochs):** Bài báo gốc (Section 6.1.1 & Appendix C.1) không công bố số epochs cho CIFAR-100; kiểm tra `scripts/cifar.sh` của tác giả cho thấy họ huấn luyện tới **600 epochs** (`-tmax 600`), trong khi bản *clean-room* của nhóm dùng **100 epochs** theo thông lệ chuẩn.
-2. **Chiến lược Data Augmentation ẩn (`AutoAugment` vs. cơ bản):** Trong `dataloader/cifar100/cifar.py`, tác giả tích hợp ngầm `CIFAR10Policy` (`AutoAugment`) mà không đề cập trong văn bản bài báo; bản *clean-room* của nhóm chỉ sử dụng `RandomCrop(32, padding=4)` và `RandomHorizontalFlip()`.
-3. **Thứ tự chia lớp & biến thiên chọn mẫu 5-shot (*Shot Variance*):** Mã nguồn gốc nạp bộ tệp chỉ số cố định (`data/index_list/cifar100/session_1..9.txt`) kế thừa từ TOPIC/CEC/FACT với `seed=1`, trong khi bản *clean-room* sử dụng thứ tự nhãn `0..99` mặc định của `torchvision` và bốc mẫu ngẫu nhiên theo `seed=2026`.
-4. **Môi trường phần cứng & thư viện:** Bài báo thực nghiệm trên GPU NVIDIA RTX 3090 với PyTorch 1.4 / NumPy 1.x, trong khi nhóm thực thi trên Google Colab Tesla T4 với PyTorch 2.x / Python 3.13 / NumPy 2.x.
+Việc thực thi độc lập kho gốc `wangkiw/TEEN` trên cùng hạ tầng Colab cho phép tách bạch chính xác tổng độ lệch **`-7.57` điểm phần trăm** (`52.64%` vs. `45.07%`) tại Session 8 thành hai lớp nguyên nhân có kiểm chứng:
 
-Dù có độ lệch nền từ Session 0, bản tái lập của nhóm vẫn tái hiện nhất quán hai tính chất cốt lõi của TEEN: (1) triệt tiêu hiện tượng quên thảm khốc khi `BAcc` chỉ giảm `3.52%` xuyên suốt 8 phiên mở rộng, và (2) tốc độ suy giảm hiệu năng `PD = 25.60%` nằm cùng nhóm với `Decoupled-DeepEMD` (`25.34%`) và vượt trội các baseline như `Decoupled-Cosine` (`26.87%`) hay `TOPIC` (`34.73%`) trong Table 6.
+1. **Sai số do phần cứng & phiên bản thư viện (`Paper` vs. `wangkiw/TEEN` trên Colab L4: `-1.53` pp):**
+   Khi chạy nguyên bản mã nguồn tác giả trên GPU L4 với PyTorch 2.x, độ chính xác cuối đạt **`51.11%`** (so với `52.64%` trong Table 6 trên RTX 3090 với PyTorch 1.4), và các chỉ số phân rã `NAcc = 22.40%`, `HMean = 33.97%` bám sát Table 8 (`25.13%` và `37.11%`). Điều này chứng minh khác biệt phần cứng GPU và seed khởi tạo chỉ gây biến thiên nhỏ quanh mức `1.5` điểm phần trăm.
+2. **Tác động của 3 chi tiết cài đặt không nêu trong văn bản bài báo (`wangkiw/TEEN` vs. `Clean-Room Nhóm 05`: `-6.04` pp — chiếm ~80% tổng độ lệch):**
+   * **Số vòng lặp huấn luyện Base Session (`600` vs. `100` epochs):** Section 6.1.1 & Appendix C.1 chỉ nêu 400 epochs cho CUB200 và không công bố số epochs cho CIFAR-100; tệp `scripts/cifar.sh` của tác giả huấn luyện tới **600 epochs** (`-tmax 600`), trong khi bản *clean-room* chạy **100 epochs** theo thông lệ chuẩn.
+   * **Chiến lược Data Augmentation ẩn (`AutoAugment` vs. cơ bản):** Tệp `dataloader/cifar100/cifar.py` tích hợp ngầm `CIFAR10Policy` (AutoAugment) mà không đề cập trong bài báo; bản *clean-room* chỉ dùng `RandomCrop(32, padding=4)` và `RandomHorizontalFlip()`.
+   * **Thứ tự chia lớp & biến thiên chọn mẫu 5-shot (*Shot Variance*):** Mã nguồn gốc nạp bộ tệp chỉ số cố định (`data/index_list/cifar100/session_1..9.txt`) kế thừa từ TOPIC/CEC/FACT với `seed=1`, trong khi bản *clean-room* dùng thứ tự nhãn `0..99` mặc định của `torchvision` và bốc mẫu ngẫu nhiên theo `seed=2026`.
 
-Bên cạnh đó, mức `NAcc = 11.95%` (và `HMean = 20.29%`) của nhóm tại Session 8 thấp hơn `-13.18` điểm phần trăm so với mức `NAcc = 25.13%` (`HMean = 37.11%`) được báo cáo tại Appendix C.2, Table 8 của bài báo. Kết quả này phản ánh rõ hiện tượng thiên vị lớp cơ sở (*Base-Class Dominance*, Section 4.1): khi không gian đặc trưng nền 100 epochs (không dùng `AutoAugment`) có độ phân tách thấp hơn, cường độ hiệu chuẩn mặc định $\alpha = 0.1$ chưa đủ mạnh để kéo các mẫu lớp mới thoát khỏi lực hút của 60 lớp cơ sở. Xu hướng đánh đổi giữa `BAcc` và `NAcc`/`HMean` khi tăng dần $\alpha$ được kiểm chứng trực tiếp tại lượt chạy quét siêu tham số `phq5eqnt`.
+Dù tồn tại khoảng cách nền từ Session 0, bản tái lập *clean-room* của nhóm vẫn tái hiện nhất quán hai đặc tính cốt lõi của TEEN: (1) triệt tiêu hiện tượng quên thảm khốc khi `BAcc` chỉ giảm `3.52` pp xuyên suốt 8 phiên mở rộng, và (2) tốc độ suy giảm hiệu năng `PD = 25.60%` nằm cùng nhóm với Decoupled-DeepEMD (`25.34%`) và vượt trội Decoupled-Cosine (`26.87%`) hay TOPIC (`34.73%`) trong Table 6. Bên cạnh đó, mức `NAcc = 11.95%` tại Session 8 phản ánh rõ hiện tượng thiên vị lớp cơ sở (*Base-Class Dominance*, Section 4.1): khi không gian đặc trưng nền 100 epochs (không dùng AutoAugment) có độ phân tách thấp hơn, cường độ hiệu chuẩn mặc định $\alpha = 0.1$ chưa đủ mạnh để kéo các mẫu lớp mới thoát khỏi lực hút của 60 lớp cơ sở — điều này được kiểm chứng trực tiếp tại lượt chạy quét siêu tham số `phq5eqnt` (đỉnh `HMean = 23.81%` tại $\tau = 16.0, \alpha = 0.7$).
 
 ---
 

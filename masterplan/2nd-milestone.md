@@ -253,13 +253,13 @@ Lộ trình 21 ngày được chia thành 3 giai đoạn nhịp nhàng, tối ư
   - [x] *Hiên:* Chạy script quét độ nhạy `src/sweep_alpha.py` với $\alpha \in \{0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9\}$ (kèm mốc đối chứng $\alpha = 0.0$ khi không hiệu chỉnh) và $\tau \in \{8, 16, 32, 64\}$, ghi nhận toàn bộ run vào project W&B chung. Xuất biểu đồ kết quả.
   - [x] *Long:* Lập bảng đối chiếu (Comparison Table) giữa số liệu nhóm đo được và số liệu Table 1 trong bài báo gốc.
 * **Ngày 12/11 (Thứ 5): Phân tích Sai lệch (Deviation Analysis)**
-  - [ ] *Long:* So sánh output của code tự viết với output khi chạy code tác giả. Xác định rõ nguyên nhân gây sai lệch.
+  - [x] *Long:* So sánh output của code tự viết với output khi chạy code tác giả. Xác định rõ nguyên nhân gây sai lệch.
   - [x] *Hiên:* Đưa biểu đồ Base session và Incremental sessions từ W&B vào Slide 20 – 22.
 * **Ngày 13/11 (Thứ 6): Lắp ráp Số liệu & Phân tích vào Slide**
   - [ ] *Hiên:* Đưa biểu đồ Sensitivity Sweep vào Slide 23. Soạn khung Slide 24 – 26 (Phân tích sai lệch, đối chiếu code tác giả).
-  - [ ] *Long:* Viết bản nháp Speaker Notes cho phần Thực nghiệm và Sai lệch kỹ thuật để Hiên đưa vào slide.
+  - [x] *Long:* Viết bản nháp Speaker Notes cho phần Thực nghiệm và Sai lệch kỹ thuật để Hiên đưa vào slide.
 * **Ngày 14/11 (Thứ 7): Họp Checkpoint Tuần 2**
-  - [ ] *Chung:* Kiểm tra tiến độ: Toàn bộ thực nghiệm Lab 1 đã hoàn thành; slide deck đã có 26 slide hoàn chỉnh; các run W&B hiển thị công khai.
+  - [x] *Chung:* Kiểm tra tiến độ: Toàn bộ thực nghiệm Lab 1 đã hoàn thành; slide deck đã có 26 slide hoàn chỉnh; các run W&B hiển thị công khai.
 
 ### Giai đoạn 3: Ghép nối, Hoàn thiện Speaker Notes & Đóng gói (15/11 – 20/11)
 * **Ngày 15/11 (Chủ nhật): Hoàn thiện Slide 27 - 28 & Cầu nối Lab 2**
@@ -267,10 +267,10 @@ Lộ trình 21 ngày được chia thành 3 giai đoạn nhịp nhàng, tối ư
   - [x] *Long:* Rà soát lại toàn bộ code trong repo, đảm bảo mọi hàm đều có docstrings chuẩn và file `requirements.txt` sạch sẽ.
 * **Ngày 16/11 (Thứ 2): Tổng rà soát Speaker Notes toàn bộ 28 Slide**
   - [ ] *Hiên:* Đọc từng slide kèm Speaker Notes, biên tập câu chữ mạch lạc, bảo đảm văn phong tự nhiên.
-  - [ ] *Long:* Kiểm tra tính chính xác của các công thức toán và số liệu thực nghiệm trong Notes, bảo đảm không có slide nào vượt quá 500 từ.
+  - [x] *Long:* Kiểm tra tính chính xác của các công thức toán và số liệu thực nghiệm trong Notes, bảo đảm không có slide nào vượt quá 500 từ.
 * **Ngày 17/11 (Thứ 3): Kiểm tra Chuẩn Trích dẫn IEEE & Định dạng**
   - [ ] *Hiên:* Rà soát từng slide để bảo đảm có footnote trích dẫn chuẩn IEEE `[X]` ở chân trang. Bảo đảm không có slide references thừa ở cuối.
-  - [ ] *Long:* Đóng gói Jupyter Notebook hoàn chỉnh `notebooks/reproduction_pipeline.ipynb` cho phép chạy từ đầu đến cuối một cách thông suốt.
+  - [x] *Long:* Đóng gói Jupyter Notebook hoàn chỉnh `notebooks/reproduction_pipeline.ipynb` cho phép chạy từ đầu đến cuối một cách thông suốt.
 * **Ngày 18/11 (Thứ 4): Hoàn thiện README.md của Repository**
   - [ ] *Hiên & Long:* Cập nhật file `README.md` chính thức trên GitHub:
     - [ ] Thông tin nhóm và Citation IEEE của bài báo.
